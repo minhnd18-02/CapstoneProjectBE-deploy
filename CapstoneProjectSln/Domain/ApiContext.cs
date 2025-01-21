@@ -26,7 +26,7 @@ namespace Infrastructure
         public DbSet<Game> Games { get; set; }
         public DbSet<Platform> Platforms { get; set; }
         public DbSet<GameCategory> GameCategories { get; set; }
-
+        public DbSet<Token> Tokens { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

@@ -1,10 +1,19 @@
-﻿namespace CapstonProjectBE
+﻿using Application.IService;
+using Application.Services;
+using Infrastructure;
+
+namespace CapstonProjectBE
 {
     public static class DependencyInject
     {
         public static IServiceCollection AddWebAPIService(this IServiceCollection services)
         {
-            services.AddControllers();
+            services.AddControllers().AddJsonOptions(option =>
+            {
+                option.JsonSerializerOptions.PropertyNamingPolicy = new KebabCaseNamingPolicy();
+            });
+            services.AddScoped<IAuthenService, AuthenService>();
+
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen();
             services.AddHealthChecks();

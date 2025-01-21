@@ -15,6 +15,7 @@ namespace Domain.Entities
         public DateTime CreatedDatetime { get; set; }
 
         // Relationships
+        public ICollection<Token> Tokens { get; set; }
         public ICollection<Post> Posts { get; set; } = new List<Post>();
         public ICollection<TeamMember> TeamMembers { get; set; } = new List<TeamMember>();
     }

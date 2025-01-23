@@ -32,6 +32,14 @@ namespace Infrastructure
             base.OnModelCreating(modelBuilder);
 
             // Configure relationships and constraints here if needed
+            modelBuilder.Entity<User>()
+                .HasIndex(u => u.Email)
+                .IsUnique();
+
+            modelBuilder.Entity<Card>()
+                .Property(c => c.Status)
+                .HasDefaultValue(true);
+
             modelBuilder.Entity<Assignation>()
                 .HasKey(a => new { a.CardId, a.UserId });
 
@@ -49,6 +57,12 @@ namespace Infrastructure
 
             modelBuilder.Entity<PostAttachment>()
                 .HasKey(gp => new { gp.PostId, gp.FileId });
+
+            modelBuilder.Entity<Transaction>()
+                .HasOne(t => t.PaymentLinkInformation)
+                .WithMany(p => p.Transactions)
+                .HasForeignKey(t => t.PaymentLinkInformationId);
+
         }
     }
 }

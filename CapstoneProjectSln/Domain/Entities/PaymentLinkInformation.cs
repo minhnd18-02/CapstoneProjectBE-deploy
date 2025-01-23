@@ -9,16 +9,16 @@ namespace Domain.Entities
     public class PaymentLinkInformation
     {
         public int PaymentLinkInformationId { get; set; }
-        public string Id { get; set; }
+        public string Id { get; set; } = string.Empty;
         public long OrderCode { get; set; }
         public int Amount { get; set; }
         public int AmountPaid { get; set; }
         public int AmountRemaining { get; set; }
-        public string Status { get; set; }
-        public string CreateAt { get; set; }
+        public string Status { get; set; } = string.Empty;
+        public string CreateAt { get; set; } = string.Empty;
         public string? CancelAt { get; set; }
         public string? CancellationReason { get; set; }
 
-        public ICollection<Transaction> Transactions { get; set; }
+        public virtual ICollection<Transaction> Transactions { get; set; } = new List<Transaction>();
     }
 }

@@ -1,4 +1,6 @@
-﻿using Application.ViewModels.UserDTO;
+﻿using Application.ViewModels.BoardDTO;
+using Application.ViewModels.CardDTO;
+using Application.ViewModels.UserDTO;
 using AutoMapper;
 using Domain.Entities;
 using System;
@@ -15,7 +17,8 @@ namespace Infrastructure.Mappers
         {
             CreateMap<User, RegisterDTO>().ReverseMap();
             CreateMap<User, LoginUserDTO>().ReverseMap();
-
+            CreateMap<Card, CardDTO>().ReverseMap();
+            CreateMap<Board, BoardDTO>().ReverseMap();
         }
     }
 }

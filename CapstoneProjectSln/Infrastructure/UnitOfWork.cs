@@ -13,17 +13,23 @@ namespace Infrastructure
         private readonly ApiContext _apiContext;
         private readonly IUserRepo _userRepository;
         private readonly ITokenRepo _tokenRepo;
+        private readonly ICardRepo _cardRepo;
+        private readonly IBoardRepo _boardRepo;
 
-        public UnitOfWork(ApiContext apiContext, IUserRepo userRepository, ITokenRepo tokenRepo)
+        public UnitOfWork(ApiContext apiContext, IUserRepo userRepository, ITokenRepo tokenRepo, ICardRepo cardRepo, IBoardRepo boardRepo)
         {
             _apiContext = apiContext;
             _tokenRepo = tokenRepo;
             _userRepository = userRepository;
+            _cardRepo = cardRepo;
+            _boardRepo = boardRepo;
         }
 
         public IUserRepo UserRepository => _userRepository;
 
         public ITokenRepo TokenRepo => _tokenRepo;
+        public ICardRepo CardRepo => _cardRepo;
+        public IBoardRepo BoardRepo => _boardRepo;
 
         public async Task<int> SaveChangeAsync()
         {

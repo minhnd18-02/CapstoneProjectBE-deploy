@@ -11,6 +11,8 @@ namespace Application
     {
         public IUserRepo UserRepository { get; }
         public ITokenRepo TokenRepo { get; }
+        public ICardRepo CardRepo { get; }
+        public IBoardRepo BoardRepo { get; }
         public Task<int> SaveChangeAsync();
     }
 }

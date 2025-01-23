@@ -1,4 +1,6 @@
-﻿using AutoMapper;
+﻿using Application.ViewModels.UserDTO;
+using AutoMapper;
+using Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,6 +13,8 @@ namespace Infrastructure.Mappers
     {
         public MapperConfigurationsProfile()
         {
+            CreateMap<User, RegisterDTO>().ReverseMap();
+            CreateMap<User, LoginUserDTO>().ReverseMap();
 
         }
     }

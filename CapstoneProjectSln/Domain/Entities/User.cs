@@ -17,6 +17,7 @@ namespace Domain.Entities
         // Relationships
         public virtual ICollection<Post> Posts { get; set; } = new List<Post>();
         public virtual ICollection<File> Files { get; set; } = new List<File>();
+        public virtual ICollection<Token> Tokens { get; set; } = new List<Token>();
         public virtual ICollection<TeamMember> TeamMembers { get; set; } = new List<TeamMember>();
         public virtual ICollection<Assignation> Assignations { get; set; } = new List<Assignation>();
 

@@ -1,4 +1,7 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Application;
+using Application.IRepositories;
+using Infrastructure.Repositories;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,6 +14,9 @@ namespace Infrastructure
     {
         public static IServiceCollection AddInfrastructuresService(this IServiceCollection services)
         {
+            services.AddScoped<IUserRepo, UserRepo>();
+            services.AddScoped<ITokenRepo, TokenRepo>();
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
             return services;
         }
     }

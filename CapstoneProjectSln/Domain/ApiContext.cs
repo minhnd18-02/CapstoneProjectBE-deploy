@@ -57,12 +57,6 @@ namespace Infrastructure
 
             modelBuilder.Entity<PostAttachment>()
                 .HasKey(gp => new { gp.PostId, gp.FileId });
-
-            modelBuilder.Entity<Transaction>()
-                .HasOne(t => t.PaymentLinkInformation)
-                .WithMany(p => p.Transactions)
-                .HasForeignKey(t => t.PaymentLinkInformationId);
-
         }
     }
 }

@@ -17,6 +17,13 @@ namespace Infrastructure.Repositories
             _context = context;
         }
 
+        public async Task<Project> CreateProject(Project project)
+        {
+            _context.Projects.Add(project);
+            await _context.SaveChangesAsync();
+            return project;
+        }
+
         public async Task<int> DeleteProject(int id)
         {
             var project = await _context.Projects.FindAsync(id);

@@ -1,4 +1,6 @@
 ﻿using Application.IService;
+using Application.ViewModels.ProjectDTO;
+using Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 
 
@@ -29,6 +31,18 @@ namespace CapstonProjectBE.Controllers
         public async Task<IActionResult> GetProjectById(int id)
         {
             return Ok(await _projectService.GetProjectById(id));
+        }
+
+        [HttpPost("CreateProject")]
+        public async Task<IActionResult> CreateProject(CreateProjectDto projectDto)
+        {
+            return Ok(await _projectService.CreateProject(projectDto));
+        }
+
+        [HttpPut("UpdateProject")]
+        public async Task<IActionResult> UpdateProject(int projectId, UpdateProjectDto updateProjectDto)
+        {
+            return Ok(await _projectService.UpdateProject(projectId, updateProjectDto));
         }
 
         [HttpDelete("DeleteProject")]

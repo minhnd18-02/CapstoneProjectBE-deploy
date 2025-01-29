@@ -1,4 +1,5 @@
-﻿using Application.ViewModels.UserDTO;
+﻿using Application.ViewModels.ProjectDTO;
+using Application.ViewModels.UserDTO;
 using AutoMapper;
 using Domain.Entities;
 using System;
@@ -15,6 +16,8 @@ namespace Infrastructure.Mappers
         {
             CreateMap<User, RegisterDTO>().ReverseMap();
             CreateMap<User, LoginUserDTO>().ReverseMap();
+            CreateMap<Project, CreateProjectDto>().ReverseMap();
+            CreateMap<Project, UpdateProjectDto>().ReverseMap();
 
         }
     }

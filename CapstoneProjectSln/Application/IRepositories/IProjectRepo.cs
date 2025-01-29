@@ -14,5 +14,6 @@ namespace Application.IRepositories
         Task<Project> GetProjectById(int id);
         Task<int> DeleteProject(int id);
         Task<int> UpdateProject(int id, Project project);   
+        Task<Project> CreateProject(Project project);
     }
 }

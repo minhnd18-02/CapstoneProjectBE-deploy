@@ -12,19 +12,24 @@ namespace Infrastructure
     {
         private readonly ApiContext _apiContext;
         private readonly IUserRepo _userRepository;
+        private readonly ITeamRepo _teamRepo;
         private readonly ITokenRepo _tokenRepo;
+        private readonly ITeamMemberRepo _teamMemberRepo;
 
-        public UnitOfWork(ApiContext apiContext, IUserRepo userRepository, ITokenRepo tokenRepo)
+        public UnitOfWork(ApiContext apiContext, IUserRepo userRepository, ITokenRepo tokenRepo, ITeamRepo team, ITeamMemberRepo teamMemberRepo)
         {
             _apiContext = apiContext;
             _tokenRepo = tokenRepo;
             _userRepository = userRepository;
+            _teamRepo = team;
+            _teamMemberRepo = teamMemberRepo;
         }
 
         public IUserRepo UserRepository => _userRepository;
 
         public ITokenRepo TokenRepo => _tokenRepo;
-
+        public ITeamRepo TeamRepository => _teamRepo;
+        public ITeamMemberRepo TeamMemberRepo => _teamMemberRepo;
         public async Task<int> SaveChangeAsync()
         {
             try

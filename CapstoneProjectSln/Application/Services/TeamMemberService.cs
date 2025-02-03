@@ -21,12 +21,12 @@ namespace Application.Services
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<ServiceResponse<TeamMemberDTO>> GetByIdAsync(int teamId)
+        public async Task<ServiceResponse<TeamMemberDTO>> GetByTeamIdAndUserId(int teamId, int userId)
         {
             var response = new ServiceResponse<TeamMemberDTO>();
             try
             {
-                var teamMember = await _unitOfWork.TeamMemberRepo.GetByIdAsync(teamId);
+                var teamMember = await _unitOfWork.TeamMemberRepo.GetByTeamIdAndUserIdIcludingTeamAndUserAsync(teamId, userId);
                 if (teamMember == null)
                 {
                     response.Success = false;
@@ -118,7 +118,7 @@ namespace Application.Services
             var response = new ServiceResponse<bool>();
             try
             {
-                var teamMember = await _unitOfWork.TeamMemberRepo.GetByIdAsync(teamId);
+                var teamMember = await _unitOfWork.TeamMemberRepo.GetByTeamIdAndUserIdIcludingTeamAndUserAsync(teamId, userId);
                 if (teamMember == null)
                 {
                     response.Success = false;
@@ -126,7 +126,7 @@ namespace Application.Services
                 }
                 else
                 {
-                    _unitOfWork.TeamMemberRepo.Remove(teamMember);
+                    await _unitOfWork.TeamMemberRepo.Remove(teamMember);
                     await _unitOfWork.SaveChangeAsync();
                     response.Data = true;
                     response.Success = true;

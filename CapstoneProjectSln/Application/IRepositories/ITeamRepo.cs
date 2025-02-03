@@ -9,9 +9,8 @@ namespace Application.IRepositories
 {
     public interface ITeamRepo : IGenericRepo<Team>
     {
-        Task<Team> GetByIdAsync(int id);
-        Task<IEnumerable<Team>> GetAllAsync();
-        Task AddAsync(Team team);
+        Task<Team?> GetByIdIncludingTeamMemberAsync(int id);
+        Task<IEnumerable<Team>> GetAllIcludingTeamMembersAsync();
         Task UpdateAsync(Team team);
         Task DeleteAsync(int id);
     }

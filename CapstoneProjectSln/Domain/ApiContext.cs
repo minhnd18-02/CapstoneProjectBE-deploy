@@ -32,6 +32,14 @@ namespace Infrastructure
             base.OnModelCreating(modelBuilder);
 
             // Configure relationships and constraints here if needed
+            modelBuilder.Entity<User>()
+                .HasIndex(u => u.Email)
+                .IsUnique();
+
+            modelBuilder.Entity<Card>()
+                .Property(c => c.Status)
+                .HasDefaultValue(true);
+
             modelBuilder.Entity<Assignation>()
                 .HasKey(a => new { a.CardId, a.UserId });
 

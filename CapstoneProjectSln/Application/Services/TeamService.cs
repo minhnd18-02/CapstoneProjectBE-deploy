@@ -100,7 +100,6 @@ namespace Application.Services
                 {
                     _mapper.Map(teamDTO, team);
                     await _unitOfWork.TeamRepository.UpdateAsync(team);
-                    await _unitOfWork.SaveChangeAsync();
                     response.Data = _mapper.Map<TeamDTO>(team);
                     response.Success = true;
                     response.Message = "Team updated successfully.";

@@ -19,10 +19,10 @@ namespace CapstonProjectBE.Controllers
             _teamMemberService = teamMemberService;
         }
 
-        [HttpGet("{teamId}/{userId}")]
-        public async Task<ActionResult<ServiceResponse<TeamMemberDTO>>> GetById(int teamId, int userId)
+        [HttpGet("{teamId}")]
+        public async Task<ActionResult<ServiceResponse<TeamMemberDTO>>> GetById(int teamId)
         {
-            var response = await _teamMemberService.GetByIdAsync(teamId, userId);
+            var response = await _teamMemberService.GetByIdAsync(teamId);
             if (!response.Success)
             {
                 return NotFound(response);
@@ -48,8 +48,8 @@ namespace CapstonProjectBE.Controllers
             return CreatedAtAction(nameof(GetById), new { teamId = response.Data.TeamId, userId = response.Data.UserId }, response);
         }
 
-        [HttpPut("{teamId}/{userId}")]
-        public async Task<ActionResult<ServiceResponse<TeamMember>>> Update(TeamMemberDTO teamMemberDTO)
+        [HttpPut]
+        public async Task<ActionResult<ServiceResponse<TeamMemberDTO>>> Update(TeamMemberDTO teamMemberDTO)
         {
             var response = await _teamMemberService.UpdateAsync(teamMemberDTO);
             if (!response.Success)

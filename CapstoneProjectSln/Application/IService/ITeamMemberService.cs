@@ -7,7 +7,7 @@ namespace Application.IService
 {
     public interface ITeamMemberService
     {
-        Task<ServiceResponse<TeamMemberDTO>> GetByIdAsync(int teamId, int userId);
+        Task<ServiceResponse<TeamMemberDTO>> GetByIdAsync(int teamId);
         Task<ServiceResponse<IEnumerable<TeamMemberDTO>>> GetAllByTeamIdAsync(int teamId);
         Task<ServiceResponse<TeamMemberDTO>> AddAsync(TeamMemberDTO teamMemberDTO);
         Task<ServiceResponse<TeamMemberDTO>> UpdateAsync(TeamMemberDTO teamMemberDTO);

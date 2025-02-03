@@ -21,12 +21,12 @@ namespace Application.Services
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<ServiceResponse<TeamMemberDTO>> GetByIdAsync(int teamId, int userId)
+        public async Task<ServiceResponse<TeamMemberDTO>> GetByIdAsync(int teamId)
         {
             var response = new ServiceResponse<TeamMemberDTO>();
             try
             {
-                var teamMember = await _unitOfWork.TeamMemberRepo.GetByIdAsync(teamId, userId);
+                var teamMember = await _unitOfWork.TeamMemberRepo.GetByIdAsync(teamId);
                 if (teamMember == null)
                 {
                     response.Success = false;
@@ -90,7 +90,7 @@ namespace Application.Services
             var response = new ServiceResponse<TeamMemberDTO>();
             try
             {
-                var teamMember = await _unitOfWork.TeamMemberRepo.GetByIdAsync(teamMemberDTO.UserId, teamMemberDTO.TeamId);
+                var teamMember = await _unitOfWork.TeamMemberRepo.GetByIdAsync(teamMemberDTO.TeamId);
                 if (teamMember == null)
                 {
                     response.Success = false;
@@ -99,8 +99,7 @@ namespace Application.Services
                 else
                 {
                     _mapper.Map(teamMemberDTO, teamMember);
-                    _unitOfWork.TeamMemberRepo.Update(teamMember);
-                    await _unitOfWork.SaveChangeAsync();
+                    await _unitOfWork.TeamMemberRepo.UpdateAsync(teamMember);
                     response.Data = _mapper.Map<TeamMemberDTO>(teamMember);
                     response.Success = true;
                     response.Message = "Team member updated successfully.";
@@ -119,7 +118,7 @@ namespace Application.Services
             var response = new ServiceResponse<bool>();
             try
             {
-                var teamMember = await _unitOfWork.TeamMemberRepo.GetByIdAsync(teamId, userId);
+                var teamMember = await _unitOfWork.TeamMemberRepo.GetByIdAsync(teamId);
                 if (teamMember == null)
                 {
                     response.Success = false;
@@ -144,5 +143,3 @@ namespace Application.Services
         }
     }
 }
-
-

@@ -46,7 +46,7 @@ namespace Application.Services
             var response = new ServiceResponse<TeamDTO>();
             try
             {
-                var team = await _unitOfWork.TeamRepository.GetByIdAsync(id);
+                var team = await _unitOfWork.TeamRepository.GetByIdIncludingTeamMemberAsync(id);
                 if (team == null)
                 {
                     response.Success = false;
@@ -72,7 +72,7 @@ namespace Application.Services
             var response = new ServiceResponse<IEnumerable<TeamDTO>>();
             try
             {
-                var teams = await _unitOfWork.TeamRepository.GetAllAsync();
+                var teams = await _unitOfWork.TeamRepository.GetAllIcludingTeamMembersAsync();
                 response.Data = _mapper.Map<IEnumerable<TeamDTO>>(teams);
                 response.Success = true;
                 response.Message = "Teams retrieved successfully.";

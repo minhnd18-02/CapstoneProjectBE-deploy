@@ -9,5 +9,7 @@ namespace Application.IRepositories
 {
     public interface IBoardRepo : IGenericRepo<Board>
     {
+        public Task<List<Board>> GetBoardsByProjectId(int projectId);
+
     }
 }

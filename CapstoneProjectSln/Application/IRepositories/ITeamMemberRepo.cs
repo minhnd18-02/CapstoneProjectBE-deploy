@@ -6,7 +6,7 @@ namespace Application.IRepositories
 {
     public interface ITeamMemberRepo : IGenericRepo<TeamMember>
     {
-        Task<TeamMember> GetByIdAsync(int teamId);
+        Task<TeamMember?> GetByTeamIdAndUserIdIcludingTeamAndUserAsync(int teamId, int userId);
         Task<IEnumerable<TeamMember>> GetAllByTeamIdAsync(int teamId);
         Task UpdateAsync(TeamMember teamMember);
     }

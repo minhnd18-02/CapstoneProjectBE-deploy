@@ -19,7 +19,7 @@ namespace CapstonProjectBE.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<ServiceResponse<TeamDTO>>> GetById(int id)
+        public async Task<ActionResult<ServiceResponse<TeamDTO>>> GetById([FromRoute] int id)
         {
             var response = await _teamService.GetByIdAsync(id);
             if (!response.Success)
@@ -40,7 +40,7 @@ namespace CapstonProjectBE.Controllers
         public async Task<ActionResult<ServiceResponse<TeamDTO>>> CreateTeam(TeamDTO teamDTO)
         {
             var response = await _teamService.CreateTeamAsync(teamDTO);
-            if (!response.Success)
+            if (!response.Success || response.Data == null)
             {
                 return BadRequest(response);
             }

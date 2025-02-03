@@ -17,16 +17,13 @@ namespace Infrastructure.Repositories
             this._context = context;
             _dbSet = context.Set<T>();
         }
+
         public async Task AddAsync(T entity)
         {
             _ = await _dbSet.AddAsync(entity);
             _ = await _context.SaveChangesAsync();
         }
-        public async Task cDeleteTokenAsync(T entity)
-        {
-            _dbSet.Remove(entity);
-            await _context.SaveChangesAsync();
-        }
+
         public async Task<List<T>> GetAllAsync()
         {
             return await _dbSet.ToListAsync();
@@ -42,9 +39,10 @@ namespace Infrastructure.Repositories
             return await _dbSet.FindAsync(id);
         }
 
-        public Task Remove(T entity)
+        public async Task Remove(T entity)
         {
-            throw new NotImplementedException();
+            _dbSet.Remove(entity);
+            await _context.SaveChangesAsync();
         }
 
         public async Task Update(T entity)

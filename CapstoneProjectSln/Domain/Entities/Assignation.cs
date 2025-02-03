@@ -10,8 +10,8 @@ namespace Domain.Entities
     {
         public int CardId { get; set; }
         public int UserId { get; set; }
-        public Card Card { get; set; } = null!;
-        public User User { get; set; } = null!;
+        public virtual Card Card { get; set; } = null!;
+        public virtual User User { get; set; } = null!;
 
     }
 }

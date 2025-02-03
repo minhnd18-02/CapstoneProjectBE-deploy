@@ -13,7 +13,7 @@ namespace Domain.Entities
         public string Name { get; set; } = string.Empty;
         public string? Description { get; set; }
         public bool Status { get; set; }
-        public DateTime Deadline { get; set; }
+        public DateTime? Deadline { get; set; }
         public DateTime CreatedDatetime { get; set; }
         public virtual Board Board { get; set; } = null!;
         public virtual ICollection<Assignation> Assignations { get; set; } = new List<Assignation>();

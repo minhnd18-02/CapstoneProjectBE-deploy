@@ -15,24 +15,18 @@ namespace Infrastructure.Repositories
             _dbContext = dbContext;
         }
 
-        public async Task<Team> GetByIdAsync(int id)
+        public async Task<Team?> GetByIdIncludingTeamMemberAsync(int id)
         {
             return await _dbContext.Teams
                 .Include(t => t.TeamMembers)
                 .FirstOrDefaultAsync(t => t.TeamId == id);
         }
 
-        public async Task<IEnumerable<Team>> GetAllAsync()
+        public async Task<IEnumerable<Team>> GetAllIcludingTeamMembersAsync()
         {
             return await _dbContext.Teams
                 .Include(t => t.TeamMembers)
                 .ToListAsync();
-        }
-
-        public async Task AddAsync(Team team)
-        {
-            await _dbContext.Teams.AddAsync(team);
-            await _dbContext.SaveChangesAsync();
         }
 
         public async Task UpdateAsync(Team team)

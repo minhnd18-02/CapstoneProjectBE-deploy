@@ -20,8 +20,8 @@ namespace Infrastructure
             services.AddScoped<IBoardRepo, BoardRepo>();
             services.AddScoped<ITeamRepo, TeamRepo>();
             services.AddScoped<ITeamMemberRepo, TeamMemberRepo>();
-            services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IProjectRepo, ProjectRepo>();
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
             return services;
         }
     }

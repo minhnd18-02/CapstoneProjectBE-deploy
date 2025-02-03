@@ -19,10 +19,10 @@ namespace CapstonProjectBE.Controllers
             _teamMemberService = teamMemberService;
         }
 
-        [HttpGet("{teamId}")]
-        public async Task<ActionResult<ServiceResponse<TeamMemberDTO>>> GetById(int teamId)
+        [HttpGet("{teamId}/{userId}")]
+        public async Task<ActionResult<ServiceResponse<TeamMemberDTO>>> GetByTeamIdAndUserId([FromRoute] int teamId, [FromRoute] int userId)
         {
-            var response = await _teamMemberService.GetByIdAsync(teamId);
+            var response = await _teamMemberService.GetByTeamIdAndUserId(teamId, userId);
             if (!response.Success)
             {
                 return NotFound(response);
@@ -31,7 +31,7 @@ namespace CapstonProjectBE.Controllers
         }
 
         [HttpGet("team/{teamId}")]
-        public async Task<ActionResult<ServiceResponse<IEnumerable<TeamMemberDTO>>>> GetAllByTeamId(int teamId)
+        public async Task<ActionResult<ServiceResponse<IEnumerable<TeamMemberDTO>>>> GetAllByTeamId([FromRoute] int teamId)
         {
             var response = await _teamMemberService.GetAllByTeamIdAsync(teamId);
             return Ok(response);
@@ -41,11 +41,11 @@ namespace CapstonProjectBE.Controllers
         public async Task<ActionResult<ServiceResponse<TeamMemberDTO>>> Add(TeamMemberDTO teamMemberDTO)
         {
             var response = await _teamMemberService.AddAsync(teamMemberDTO);
-            if (!response.Success)
+            if (!response.Success || response.Data == null)
             {
                 return BadRequest(response);
             }
-            return CreatedAtAction(nameof(GetById), new { teamId = response.Data.TeamId, userId = response.Data.UserId }, response);
+            return CreatedAtAction(nameof(GetByTeamIdAndUserId), new { teamId = response.Data.TeamId, userId = response.Data.UserId }, response);
         }
 
         [HttpPut]

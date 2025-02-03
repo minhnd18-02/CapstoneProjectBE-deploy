@@ -21,12 +21,12 @@ namespace Application.Services
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<ServiceResponse<TeamMemberDTO>> GetByIdAsync(int teamId)
+        public async Task<ServiceResponse<TeamMemberDTO>> GetByTeamIdAndUserId(int teamId, int userId)
         {
             var response = new ServiceResponse<TeamMemberDTO>();
             try
             {
-                var teamMember = await _unitOfWork.TeamMemberRepo.GetByIdAsync(teamId);
+                var teamMember = await _unitOfWork.TeamMemberRepo.GetByTeamIdAndUserIdIcludingTeamAndUserAsync(teamId, userId);
                 if (teamMember == null)
                 {
                     response.Success = false;
@@ -70,6 +70,27 @@ namespace Application.Services
             var response = new ServiceResponse<TeamMemberDTO>();
             try
             {
+                var existingTeam = await _unitOfWork.TeamRepository.GetByIdAsync(teamMemberDTO.TeamId);
+                if (existingTeam == null)
+                {
+                    response.Success = false;
+                    response.Message = "Team not found";
+                    return response;
+                }
+                var existingUser = await _unitOfWork.UserRepository.GetByIdAsync(teamMemberDTO.UserId);
+                if (existingUser == null)
+                {
+                    response.Success = false;
+                    response.Message = "User not found";
+                    return response;
+                }
+                var existingTeamMember = await _unitOfWork.TeamMemberRepo.GetByTeamIdAndUserIdIcludingTeamAndUserAsync(teamMemberDTO.TeamId, teamMemberDTO.UserId);
+                if (existingTeamMember == null)
+                {
+                    response.Success = false;
+                    response.Message = "Team member not found";
+                    return response;
+                }
                 var teamMember = _mapper.Map<TeamMember>(teamMemberDTO);
                 await _unitOfWork.TeamMemberRepo.AddAsync(teamMember);
                 await _unitOfWork.SaveChangeAsync();
@@ -90,20 +111,36 @@ namespace Application.Services
             var response = new ServiceResponse<TeamMemberDTO>();
             try
             {
-                var teamMember = await _unitOfWork.TeamMemberRepo.GetByIdAsync(teamMemberDTO.TeamId);
+                var teamMember = await _unitOfWork.TeamMemberRepo.GetByTeamIdAndUserIdIcludingTeamAndUserAsync(teamMemberDTO.TeamId, teamMemberDTO.UserId);
                 if (teamMember == null)
                 {
                     response.Success = false;
                     response.Message = "Team member not found";
+                    return response;
                 }
-                else
+                var existingTeam = await _unitOfWork.TeamRepository.GetByIdAsync(teamMemberDTO.TeamId);
+                if (existingTeam == null)
                 {
-                    _mapper.Map(teamMemberDTO, teamMember);
-                    await _unitOfWork.TeamMemberRepo.UpdateAsync(teamMember);
-                    response.Data = _mapper.Map<TeamMemberDTO>(teamMember);
-                    response.Success = true;
-                    response.Message = "Team member updated successfully.";
+                    response.Success = false;
+                    response.Message = "Team not found";
+                    await _unitOfWork.TeamMemberRepo.Remove(teamMember);
+                    return response;
                 }
+                var existingUser = await _unitOfWork.UserRepository.GetByIdAsync(teamMemberDTO.UserId);
+                if (existingUser == null)
+                {
+                    response.Success = false;
+                    response.Message = "User not found";
+                    await _unitOfWork.TeamMemberRepo.Remove(teamMember);
+                    return response;
+                }
+
+                _mapper.Map(teamMemberDTO, teamMember);
+                await _unitOfWork.TeamMemberRepo.UpdateAsync(teamMember);
+                response.Data = _mapper.Map<TeamMemberDTO>(teamMember);
+                response.Success = true;
+                response.Message = "Team member updated successfully.";
+
             }
             catch (Exception ex)
             {
@@ -118,7 +155,7 @@ namespace Application.Services
             var response = new ServiceResponse<bool>();
             try
             {
-                var teamMember = await _unitOfWork.TeamMemberRepo.GetByIdAsync(teamId);
+                var teamMember = await _unitOfWork.TeamMemberRepo.GetByTeamIdAndUserIdIcludingTeamAndUserAsync(teamId, userId);
                 if (teamMember == null)
                 {
                     response.Success = false;
@@ -126,7 +163,7 @@ namespace Application.Services
                 }
                 else
                 {
-                    _unitOfWork.TeamMemberRepo.Remove(teamMember);
+                    await _unitOfWork.TeamMemberRepo.Remove(teamMember);
                     await _unitOfWork.SaveChangeAsync();
                     response.Data = true;
                     response.Success = true;

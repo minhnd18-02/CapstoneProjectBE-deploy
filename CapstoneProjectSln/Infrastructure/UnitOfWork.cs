@@ -15,7 +15,6 @@ namespace Infrastructure
         private readonly ITeamRepo _teamRepo;
         private readonly ITokenRepo _tokenRepo;
         private readonly IProjectRepo _projectRepo;
-
         private readonly ICardRepo _cardRepo;
         private readonly IBoardRepo _boardRepo;
         private readonly ITeamMemberRepo _teamMemberRepo;
@@ -41,9 +40,9 @@ namespace Infrastructure
         public ICardRepo CardRepo => _cardRepo;
         
         public IBoardRepo BoardRepo => _boardRepo;
-        
+
         public ITeamRepo TeamRepository => _teamRepo;
-        
+
         public ITeamMemberRepo TeamMemberRepo => _teamMemberRepo;
 
         public async Task<int> SaveChangeAsync()

@@ -41,7 +41,7 @@ namespace Infrastructure.Repositories
 
         }
 
-        public async Task<Project> GetProjectById(int id) => await _context.Projects.FindAsync(id);
+        public async Task<Project?> GetProjectById(int id) => await _context.Projects.FindAsync(id);
 
         public async Task<(int, int, IEnumerable<Project>)> GetProjectsPaging(int pageNumber, int pageSize)
         {

@@ -16,12 +16,11 @@ namespace Infrastructure
         private readonly ITokenRepo _tokenRepo;
         private readonly IProjectRepo _projectRepo;
 
-        public UnitOfWork(ApiContext apiContext, IUserRepo userRepository, ITokenRepo tokenRepo, IProjectRepo projectRepo)
         private readonly ICardRepo _cardRepo;
         private readonly IBoardRepo _boardRepo;
         private readonly ITeamMemberRepo _teamMemberRepo;
 
-        public UnitOfWork(ApiContext apiContext, IUserRepo userRepository, ITokenRepo tokenRepo, ITeamRepo team, ITeamMemberRepo teamMemberRepo, ICardRepo cardRepo, IBoardRepo boardRepo, ITokenRepo tokenRepo, IProjectRepo projectRepo)
+        public UnitOfWork(ApiContext apiContext, IUserRepo userRepository, ITokenRepo tokenRepo, ITeamRepo team, ITeamMemberRepo teamMemberRepo, ICardRepo cardRepo, IBoardRepo boardRepo, IProjectRepo projectRepo)
         {
             _apiContext = apiContext;
             _tokenRepo = tokenRepo;

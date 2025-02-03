@@ -4,16 +4,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Domain.Entities
+namespace Application.ViewModels.CardDTO
 {
-    public class Board
+    public class CardDTO
     {
+        public int CardId { get; set; }
         public int BoardId { get; set; }
         public string Name { get; set; } = string.Empty;
-        public string Label { get; set; } = string.Empty;
-        public int ProjectId { get; set; }
+        public string? Description { get; set; }
         public bool Status { get; set; }
+        public DateTime Deadline { get; set; }
         public DateTime CreatedDatetime { get; set; }
-        public virtual ICollection<Card> Cards { get; set; } = new List<Card>();
     }
 }

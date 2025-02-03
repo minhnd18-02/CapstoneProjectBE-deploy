@@ -13,5 +13,7 @@ namespace Domain.Entities
 
         // Relationships
         public virtual ICollection<TeamMember> TeamMembers { get; set; } = new List<TeamMember>();
+        public virtual ICollection<Project> Projects { get; set; } = new List<Project>();
+
     }
 }

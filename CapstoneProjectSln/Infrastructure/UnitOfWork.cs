@@ -12,15 +12,25 @@ namespace Infrastructure
     {
         private readonly ApiContext _apiContext;
         private readonly IUserRepo _userRepository;
+        private readonly ITeamRepo _teamRepo;
         private readonly ITokenRepo _tokenRepo;
         private readonly IProjectRepo _projectRepo;
 
         public UnitOfWork(ApiContext apiContext, IUserRepo userRepository, ITokenRepo tokenRepo, IProjectRepo projectRepo)
+        private readonly ICardRepo _cardRepo;
+        private readonly IBoardRepo _boardRepo;
+        private readonly ITeamMemberRepo _teamMemberRepo;
+
+        public UnitOfWork(ApiContext apiContext, IUserRepo userRepository, ITokenRepo tokenRepo, ITeamRepo team, ITeamMemberRepo teamMemberRepo, ICardRepo cardRepo, IBoardRepo boardRepo, ITokenRepo tokenRepo, IProjectRepo projectRepo)
         {
             _apiContext = apiContext;
             _tokenRepo = tokenRepo;
             _userRepository = userRepository;
             _projectRepo = projectRepo;
+            _cardRepo = cardRepo;
+            _boardRepo = boardRepo;
+            _teamRepo = team;
+            _teamMemberRepo = teamMemberRepo;
         }
 
         public IUserRepo UserRepository => _userRepository;
@@ -28,6 +38,14 @@ namespace Infrastructure
         public ITokenRepo TokenRepo => _tokenRepo;
 
         public IProjectRepo ProjectRepo => _projectRepo;
+
+        public ICardRepo CardRepo => _cardRepo;
+        
+        public IBoardRepo BoardRepo => _boardRepo;
+        
+        public ITeamRepo TeamRepository => _teamRepo;
+        
+        public ITeamMemberRepo TeamMemberRepo => _teamMemberRepo;
 
         public async Task<int> SaveChangeAsync()
         {

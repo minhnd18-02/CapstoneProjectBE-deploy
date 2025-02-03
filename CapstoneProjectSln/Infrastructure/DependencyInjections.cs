@@ -21,6 +21,7 @@ namespace Infrastructure
             services.AddScoped<ITeamRepo, TeamRepo>();
             services.AddScoped<ITeamMemberRepo, TeamMemberRepo>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<IProjectRepo, ProjectRepo>();
             return services;
         }
     }

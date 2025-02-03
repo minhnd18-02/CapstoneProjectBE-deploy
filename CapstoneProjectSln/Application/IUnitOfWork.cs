@@ -11,6 +11,7 @@ namespace Application
     {
         public IUserRepo UserRepository { get; }
         public ITokenRepo TokenRepo { get; }
+        public IProjectRepo ProjectRepo { get; }
         public ICardRepo CardRepo { get; }
         public IBoardRepo BoardRepo { get; }
         public ITeamRepo TeamRepository { get; }

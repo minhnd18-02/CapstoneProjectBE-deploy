@@ -1,3 +1,4 @@
+﻿using Application.ViewModels.ProjectDTO;
 ﻿using Application.ViewModels.BoardDTO;
 using Application.ViewModels.CardDTO;
 ﻿using Application.ViewModels.TeamDTO;
@@ -19,6 +20,8 @@ namespace Infrastructure.Mappers
         {
             CreateMap<User, RegisterDTO>().ReverseMap();
             CreateMap<User, LoginUserDTO>().ReverseMap();
+            CreateMap<Project, CreateProjectDto>().ReverseMap();
+            CreateMap<Project, UpdateProjectDto>().ReverseMap();
             CreateMap<Card, CardDTO>().ReverseMap();
             CreateMap<Board, BoardDTO>().ReverseMap();
             CreateMap<Team, TeamDTO>().ReverseMap();

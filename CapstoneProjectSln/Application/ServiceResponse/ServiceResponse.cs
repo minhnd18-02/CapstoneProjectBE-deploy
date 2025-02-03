@@ -27,6 +27,6 @@ namespace Application.ServiceResponse
         public int Page { get; set; }
         public int TotalPage { get; set; }
         public int TotalRecords { get; set; }
-        public List<T> ListData { get; set; } = new List<T>();
+        public IEnumerable<T> ListData { get; set; } = new List<T>();
     }
 }

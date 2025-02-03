@@ -1,4 +1,5 @@
-﻿using Application.IService;
+﻿using Application.IRepositories;
+using Application.IService;
 using Application.Services;
 using Infrastructure;
 
@@ -15,7 +16,9 @@ namespace CapstonProjectBE
             services.AddScoped<IAuthenService, AuthenService>();
             services.AddScoped<ICardService, CardService>();
             services.AddScoped<IBoardService, BoardService>();
-
+            services.AddScoped<IProjectService, ProjectService>();
+            services.AddScoped<ITeamService, TeamService>();
+            services.AddScoped<ITeamMemberService, TeamMemberService>();
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen();
             services.AddHealthChecks();

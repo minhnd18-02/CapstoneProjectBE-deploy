@@ -22,6 +22,12 @@ namespace Infrastructure.Repositories
             _ = await _dbSet.AddAsync(entity);
             _ = await _context.SaveChangesAsync();
         }
+        public async Task cDeleteTokenAsync(T entity)
+        {
+            _dbSet.Remove(entity);
+            await _context.SaveChangesAsync();
+        }
+
         public async Task DeleteAsync(T entity)
         {
             _dbSet.Remove(entity);
@@ -53,12 +59,5 @@ namespace Infrastructure.Repositories
             _dbSet.Update(entity);
             await _context.SaveChangesAsync();
         }
-
-        public void UpdateE(T entity)
-        {
-            throw new NotImplementedException();
-        }
-
-
     }
 }

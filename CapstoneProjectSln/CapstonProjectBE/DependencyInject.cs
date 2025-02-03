@@ -1,4 +1,5 @@
-﻿using Application.IService;
+﻿using Application.IRepositories;
+using Application.IService;
 using Application.Services;
 using Infrastructure;
 
@@ -13,7 +14,8 @@ namespace CapstonProjectBE
                 option.JsonSerializerOptions.PropertyNamingPolicy = new KebabCaseNamingPolicy();
             });
             services.AddScoped<IAuthenService, AuthenService>();
-
+            services.AddScoped<ITeamService, TeamService>();
+            services.AddScoped<ITeamMemberService, TeamMemberService>();
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen();
             services.AddHealthChecks();

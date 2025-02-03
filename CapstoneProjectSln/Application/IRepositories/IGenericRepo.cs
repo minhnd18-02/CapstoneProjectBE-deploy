@@ -14,6 +14,6 @@ namespace Application.IRepositories
         Task Update(T entity);
         Task Remove(T entity);
         void UpdateE(T entity);
-        Task cDeleteTokenAsync(T entity);
+        Task DeleteAsync(T entity);
     }
 }

@@ -13,6 +13,8 @@ namespace CapstonProjectBE
                 option.JsonSerializerOptions.PropertyNamingPolicy = new KebabCaseNamingPolicy();
             });
             services.AddScoped<IAuthenService, AuthenService>();
+            services.AddScoped<ICardService, CardService>();
+            services.AddScoped<IBoardService, BoardService>();
 
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen();

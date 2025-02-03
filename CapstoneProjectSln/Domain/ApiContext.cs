@@ -20,6 +20,7 @@ namespace Infrastructure
         public DbSet<TeamMember> TeamMembers { get; set; }
         public DbSet<GamePlatform> GamePlatforms { get; set; }
         public DbSet<Card> Cards { get; set; }
+        public DbSet<Board> Boards { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<CardAttachment> CardAttachments { get; set; }
         public DbSet<Post> Posts { get; set; }

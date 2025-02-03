@@ -13,7 +13,7 @@ namespace Application.ViewModels.BoardDTO
         public string Label { get; set; } = string.Empty;
         public int ProjectId { get; set; }
         public bool Status { get; set; }
-        public DateTime CreatedDatetime { get; set; }
+        public DateTime CreatedDatetime { get; set; } = DateTime.MinValue;
 
     }
 }

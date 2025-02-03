@@ -22,7 +22,7 @@ namespace Infrastructure.Repositories
             _ = await _dbSet.AddAsync(entity);
             _ = await _context.SaveChangesAsync();
         }
-        public async Task cDeleteTokenAsync(T entity)
+        public async Task DeleteAsync(T entity)
         {
             _dbSet.Remove(entity);
             await _context.SaveChangesAsync();
@@ -42,9 +42,10 @@ namespace Infrastructure.Repositories
             return await _dbSet.FindAsync(id);
         }
 
-        public Task Remove(T entity)
+        public async Task Remove(T entity)
         {
-            throw new NotImplementedException();
+            _dbSet.Remove(entity);
+            await _context.SaveChangesAsync();
         }
 
         public async Task Update(T entity)

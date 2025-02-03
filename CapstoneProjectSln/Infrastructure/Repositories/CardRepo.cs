@@ -1,5 +1,6 @@
 ﻿using Application.IRepositories;
 using Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,8 +11,16 @@ namespace Infrastructure.Repositories
 {
     public class CardRepo : GenericRepo<Card>, ICardRepo
     {
-        public CardRepo(ApiContext context) : base(context)
+        private readonly ApiContext _dbContext;
+
+        public CardRepo(ApiContext dbContext) : base(dbContext)
         {
+            _dbContext = dbContext;
+        }
+
+        public async Task<List<Card>> GetCardsByBoardId(int boardId)
+        {
+            return await _dbContext.Cards.Where(c => c.BoardId == boardId).ToListAsync();
         }
     }
 }

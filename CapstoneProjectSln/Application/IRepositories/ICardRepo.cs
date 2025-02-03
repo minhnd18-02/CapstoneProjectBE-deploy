@@ -9,5 +9,7 @@ namespace Application.IRepositories
 {
     public interface ICardRepo : IGenericRepo<Card>
     {
+        public Task<List<Card>> GetCardsByBoardId(int boardId);
+
     }
 }

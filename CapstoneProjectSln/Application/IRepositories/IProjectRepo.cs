@@ -7,9 +7,7 @@ using System.Threading.Tasks;
 
 namespace Application.IRepositories
 {
-    public interface IBoardRepo : IGenericRepo<Board>
+    public interface IProjectRepo : IGenericRepo<Project>
     {
-        public Task<List<Board>> GetBoardsByProjectId(int projectId);
-
     }
 }

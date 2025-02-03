@@ -52,12 +52,5 @@ namespace Infrastructure.Repositories
             _dbSet.Update(entity);
             await _context.SaveChangesAsync();
         }
-
-        public void UpdateE(T entity)
-        {
-            throw new NotImplementedException();
-        }
-
-
     }
 }

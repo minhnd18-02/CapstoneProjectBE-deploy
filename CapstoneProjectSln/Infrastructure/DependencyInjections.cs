@@ -18,6 +18,8 @@ namespace Infrastructure
             services.AddScoped<ITokenRepo, TokenRepo>();
             services.AddScoped<ICardRepo, CardRepo>();
             services.AddScoped<IBoardRepo, BoardRepo>();
+            services.AddScoped<ITeamRepo, TeamRepo>();
+            services.AddScoped<ITeamMemberRepo, TeamMemberRepo>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             return services;
         }

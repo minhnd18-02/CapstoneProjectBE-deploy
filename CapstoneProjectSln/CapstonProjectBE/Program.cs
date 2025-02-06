@@ -154,15 +154,26 @@ namespace CapstonProjectBE
                 });
             });
 
+            //var app = builder.Build();
+
+            //// Configure the HTTP request pipeline.
+            //if (app.Environment.IsDevelopment())
+            //{
+            //    app.UseSwagger();
+            //    app.UseSwaggerUI();
+            //}
+
+            #region
+            var port = Environment.GetEnvironmentVariable("PORT") ?? "8081";
+            builder.WebHost.UseUrls($"http://*:{port}");
+
             var app = builder.Build();
 
-            // Configure the HTTP request pipeline.
-            if (app.Environment.IsDevelopment())
-            {
-                app.UseSwagger();
-                app.UseSwaggerUI();
-            }
-
+            //Get swagger.json following root directory 
+            app.UseSwagger(options => { options.RouteTemplate = "{documentName}/swagger.json"; });
+            //Load swagger.json following root directory 
+            app.UseSwaggerUI(c => { c.SwaggerEndpoint("/v1/swagger.json", "GameMkt.API V1"); c.RoutePrefix = string.Empty; });
+            #endregion
             app.UseHttpsRedirection();
 
             app.UseAuthorization();

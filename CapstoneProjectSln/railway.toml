@@ -1,0 +1,7 @@
+[build]
+builder = "Dockerfile"
+dockerfilePath = "./CapstonProjectBE/Dockerfile"
+
+[deploy]
+startCommand = "dotnet CapstonProjectBE.dll"
+restartPolicyType = "never"

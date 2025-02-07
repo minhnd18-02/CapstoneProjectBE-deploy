@@ -66,9 +66,8 @@ node_modules/
 # appsettings.Development.json
 # appsettings.Staging.json
 # appsettings.Production.json
-# Comment de deploy
 *.v2
-*.json
+# *.json
 *.cache
 *.props
 *.txt

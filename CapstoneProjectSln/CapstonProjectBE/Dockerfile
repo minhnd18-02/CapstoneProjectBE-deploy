@@ -11,7 +11,7 @@ WORKDIR /src
 COPY ["CapstonProjectBE/CapstonProjectBE.csproj", "CapstonProjectBE/"]
 COPY ["Application/Application.csproj", "Application/"]
 COPY ["Domain/Domain.csproj", "Domain/"]
-COPY ["../Infrastructure/Infrastructure.csproj", "Infrastructure/"]
+COPY ["Infrastructure/Infrastructure.csproj", "Infrastructure/"]
 RUN dotnet restore "./CapstonProjectBE/CapstonProjectBE.csproj"
 COPY . .
 WORKDIR "/src/CapstonProjectBE"

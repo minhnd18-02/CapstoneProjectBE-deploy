@@ -38,7 +38,7 @@ namespace CapstonProjectBE
 
             builder.Services.AddDbContext<ApiContext>(options =>
             {
-                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+                options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
             });
             builder.Services.AddSingleton(myConfig);
             builder.Services.AddInfrastructuresService();
@@ -156,12 +156,12 @@ namespace CapstonProjectBE
 
             //var app = builder.Build();
 
-            //// Configure the HTTP request pipeline.
-            //if (app.Environment.IsDevelopment())
-            //{
-            //    app.UseSwagger();
-            //    app.UseSwaggerUI();
-            //}
+            ////// Configure the HTTP request pipeline.
+            ////if (app.Environment.IsDevelopment())
+            ////{
+            //app.UseSwagger();
+            //app.UseSwaggerUI();
+            ////}
 
             #region
             var port = Environment.GetEnvironmentVariable("PORT") ?? "8081";
@@ -174,7 +174,7 @@ namespace CapstonProjectBE
             //Load swagger.json following root directory 
             app.UseSwaggerUI(c => { c.SwaggerEndpoint("/v1/swagger.json", "GameMkt.API V1"); c.RoutePrefix = string.Empty; });
             #endregion
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
 
             app.UseAuthorization();
 

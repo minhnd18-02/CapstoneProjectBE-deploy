@@ -16,6 +16,8 @@ using System.IO;
 using System.Linq;
 using System;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.Google;
 
 namespace CapstonProjectBE
 {
@@ -30,6 +32,41 @@ namespace CapstonProjectBE
             var configuration = builder.Configuration;
             var myConfig = new AppConfiguration();
             configuration.Bind(myConfig);
+
+            builder.Services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddCookie()
+            .AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = configuration["JWTSection:Issuer"],
+                    ValidAudience = configuration["JWTSection:Audience"],
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JWTSection:SecretKey"]))
+                };
+                options.Events = new JwtBearerEvents
+                {
+                    OnAuthenticationFailed = context =>
+                    {
+                        var exception = context.Exception;
+                        Console.WriteLine("Token validation failed: " + exception.Message);
+                        return Task.CompletedTask;
+                    }
+                };
+            })
+            .AddGoogle(GoogleDefaults.AuthenticationScheme, options =>
+            {
+                options.ClientId = configuration["GoogleKeys:ClientId"];
+                options.ClientSecret = configuration["GoogleKeys:ClientSecret"];
+            });
 
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -81,41 +118,6 @@ namespace CapstonProjectBE
                 options.Cookie.HttpOnly = true;
                 options.Cookie.IsEssential = true;
             });
-            builder.Services.AddAuthentication(options =>
-            {
-                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            })
-            .AddJwtBearer(options =>
-            {
-                IConfiguration config = builder.Configuration; // Correct way to access the configuration
-                options.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuer = true,
-                    ValidateAudience = true,
-                    ValidateLifetime = true,
-                    ValidateIssuerSigningKey = true,
-
-                    ValidIssuer = config["JWTSection:Issuer"],
-                    ValidAudience = config["JWTSection:Audience"],
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["JWTSection:SecretKey"]))
-                };
-                options.Events = new JwtBearerEvents
-                {
-                    OnAuthenticationFailed = context =>
-                    {
-                        var exception = context.Exception;
-                        Console.WriteLine("Token validation failed: " + exception.Message);
-                        return Task.CompletedTask;
-                    }
-                };
-            })
-            .AddGoogle(options =>
-            {
-                IConfigurationSection googleAuthNSection = builder.Configuration.GetSection("Authentication:Google");
-                options.ClientId = googleAuthNSection["ClientId"];
-                options.ClientSecret = googleAuthNSection["ClientSecret"];
-            });
 
             builder.Services.AddSwaggerGen(c =>
             {
@@ -165,6 +167,7 @@ namespace CapstonProjectBE
 
             app.UseHttpsRedirection();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapControllers();

@@ -1,6 +1,8 @@
 ﻿using Application.IService;
 using Application.ViewModels.UserDTO;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -72,6 +74,34 @@ namespace CapstonProjectBE.Controllers
                     }
                 );
             }
+        }
+
+        [HttpPost("loginByGoogle")]
+        [AllowAnonymous]
+        public async Task LoginByGoogle()
+        {
+            var properties = new AuthenticationProperties { RedirectUri = Url.Action("GoogleResponse") };
+            await HttpContext.ChallengeAsync(GoogleDefaults.AuthenticationScheme, properties);
+        }
+
+        [HttpGet("GoogleResponse")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GoogleResponse()
+        {
+            var authenticateResult = await HttpContext.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+
+            if (!authenticateResult.Succeeded)
+                return BadRequest("Error authenticating");
+
+            var claims = authenticateResult.Principal.Identities.FirstOrDefault()?.Claims.Select(claim => new
+            {
+                claim.Issuer,
+                claim.OriginalIssuer,
+                claim.Type,
+                claim.Value
+            });
+
+            return Ok(claims);
         }
     }
 }

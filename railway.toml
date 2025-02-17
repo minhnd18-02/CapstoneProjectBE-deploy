@@ -1,6 +1,10 @@
 [build]
 builder = "Dockerfile"
+<<<<<<< HEAD:CapstoneProjectSln/railway.toml
 dockerfilePath = "./CapstonProjectBE/Dockerfile"
+=======
+dockerfilePath = "./Dockerfile"
+>>>>>>> e1f88a250fea4cf612dac726b3951e405f5a74fe:railway.toml
 
 [deploy]
 startCommand = "dotnet CapstonProjectBE.dll"

@@ -63,11 +63,11 @@ node_modules/
 *.log
 
 # Configuration files
-appsettings.Development.json
-appsettings.Staging.json
-appsettings.Production.json
+# appsettings.Development.json
+# appsettings.Staging.json
+# appsettings.Production.json
 *.v2
-*.json
+# *.json
 *.cache
 *.props
 *.txt

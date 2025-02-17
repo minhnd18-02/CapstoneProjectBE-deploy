@@ -16,6 +16,8 @@ using System.IO;
 using System.Linq;
 using System;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.Google;
 
 namespace CapstonProjectBE
 {
@@ -31,6 +33,41 @@ namespace CapstonProjectBE
             var myConfig = new AppConfiguration();
             configuration.Bind(myConfig);
 
+            builder.Services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddCookie()
+            .AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = configuration["JWTSection:Issuer"],
+                    ValidAudience = configuration["JWTSection:Audience"],
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JWTSection:SecretKey"]))
+                };
+                options.Events = new JwtBearerEvents
+                {
+                    OnAuthenticationFailed = context =>
+                    {
+                        var exception = context.Exception;
+                        Console.WriteLine("Token validation failed: " + exception.Message);
+                        return Task.CompletedTask;
+                    }
+                };
+            })
+            .AddGoogle(GoogleDefaults.AuthenticationScheme, options =>
+            {
+                options.ClientId = configuration["GoogleKeys:ClientId"];
+                options.ClientSecret = configuration["GoogleKeys:ClientSecret"];
+            });
+
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
@@ -38,7 +75,7 @@ namespace CapstonProjectBE
 
             builder.Services.AddDbContext<ApiContext>(options =>
             {
-                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+                options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
             });
             builder.Services.AddSingleton(myConfig);
             builder.Services.AddInfrastructuresService();
@@ -81,41 +118,6 @@ namespace CapstonProjectBE
                 options.Cookie.HttpOnly = true;
                 options.Cookie.IsEssential = true;
             });
-            builder.Services.AddAuthentication(options =>
-            {
-                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            })
-            .AddJwtBearer(options =>
-            {
-                IConfiguration config = builder.Configuration; // Correct way to access the configuration
-                options.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuer = true,
-                    ValidateAudience = true,
-                    ValidateLifetime = true,
-                    ValidateIssuerSigningKey = true,
-
-                    ValidIssuer = config["JWTSection:Issuer"],
-                    ValidAudience = config["JWTSection:Audience"],
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["JWTSection:SecretKey"]))
-                };
-                options.Events = new JwtBearerEvents
-                {
-                    OnAuthenticationFailed = context =>
-                    {
-                        var exception = context.Exception;
-                        Console.WriteLine("Token validation failed: " + exception.Message);
-                        return Task.CompletedTask;
-                    }
-                };
-            })
-            .AddGoogle(options =>
-            {
-                IConfigurationSection googleAuthNSection = builder.Configuration.GetSection("Authentication:Google");
-                options.ClientId = googleAuthNSection["ClientId"];
-                options.ClientSecret = googleAuthNSection["ClientSecret"];
-            });
 
             builder.Services.AddSwaggerGen(c =>
             {
@@ -154,17 +156,29 @@ namespace CapstonProjectBE
                 });
             });
 
+            //var app = builder.Build();
+
+            ////// Configure the HTTP request pipeline.
+            ////if (app.Environment.IsDevelopment())
+            ////{
+            //app.UseSwagger();
+            //app.UseSwaggerUI();
+            ////}
+
+            #region
+            var port = Environment.GetEnvironmentVariable("PORT") ?? "8081";
+            builder.WebHost.UseUrls($"http://*:{port}");
+
             var app = builder.Build();
 
-            // Configure the HTTP request pipeline.
-            if (app.Environment.IsDevelopment())
-            {
-                app.UseSwagger();
-                app.UseSwaggerUI();
-            }
+            //Get swagger.json following root directory 
+            app.UseSwagger(options => { options.RouteTemplate = "{documentName}/swagger.json"; });
+            //Load swagger.json following root directory 
+            app.UseSwaggerUI(c => { c.SwaggerEndpoint("/v1/swagger.json", "GameMkt.API V1"); c.RoutePrefix = string.Empty; });
+            #endregion
+            //app.UseHttpsRedirection();
 
-            app.UseHttpsRedirection();
-
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapControllers();

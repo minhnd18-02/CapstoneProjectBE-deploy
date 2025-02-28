@@ -11,6 +11,6 @@ namespace Domain.Entities
         public int PlatformId { get; set; }
         public string Name { get; set; } = string.Empty;
         public string? Description { get; set; }
-        public virtual ICollection<GamePlatform> GamePlatforms { get; set; } = new List<GamePlatform>();
+        public virtual ICollection<ProjectPlatform> GamePlatforms { get; set; } = new List<ProjectPlatform>();
     }
 }

@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace Domain.Entities
 {
-    public class PostAttachment
+    public class PostComment
     {
-        public int PostId { get; set; }
-        public int FileId { get; set; }
+        public int CommentId { get; set; }
+        public int PostId { get; set; } 
+        // Relationships
         public virtual Post Post { get; set; } = null!;
-        public virtual File File { get; set; } = null!;
-
+        public virtual Comment Comment { get; set; } = null!;
     }
 }

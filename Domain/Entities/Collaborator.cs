@@ -6,12 +6,11 @@ using System.Threading.Tasks;
 
 namespace Domain.Entities
 {
-    public class Assignation
+    public class Collaborator
     {
-        public int CardId { get; set; }
         public int UserId { get; set; }
-        public virtual Card Card { get; set; } = null!;
+        public int ProjectId { get; set; }
         public virtual User User { get; set; } = null!;
-
+        public virtual Project Project { get; set; } = null!;
     }
 }

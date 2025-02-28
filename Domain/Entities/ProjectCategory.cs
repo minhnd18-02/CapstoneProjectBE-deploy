@@ -6,13 +6,12 @@ using System.Threading.Tasks;
 
 namespace Domain.Entities
 {
-    public class GameCategory
+    public class ProjectCategory
     {
         public int CategoryId { get; set; }
-        public int GameId { get; set; }
+        public int ProjectId { get; set; }
 
-        // Relationships
-        public virtual Game Game { get; set; } = null!;
         public virtual Category Category { get; set; } = null!;
+        public virtual Project Project { get; set; } = null!;
     }
 }

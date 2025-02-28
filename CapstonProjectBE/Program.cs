@@ -61,12 +61,12 @@ namespace CapstonProjectBE
                         return Task.CompletedTask;
                     }
                 };
-            })
-            .AddGoogle(GoogleDefaults.AuthenticationScheme, options =>
-            {
-                options.ClientId = configuration["GoogleKeys:ClientId"];
-                options.ClientSecret = configuration["GoogleKeys:ClientSecret"];
             });
+            //.AddGoogle(GoogleDefaults.AuthenticationScheme, options =>
+            //{
+            //    options.ClientId = configuration["GoogleKeys:ClientId"];
+            //    options.ClientSecret = configuration["GoogleKeys:ClientSecret"];
+            //});
 
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -156,26 +156,35 @@ namespace CapstonProjectBE
                 });
             });
 
-            //var app = builder.Build();
-
-            ////// Configure the HTTP request pipeline.
-            ////if (app.Environment.IsDevelopment())
-            ////{
-            //app.UseSwagger();
-            //app.UseSwaggerUI();
-            ////}
-
-            #region
-            var port = Environment.GetEnvironmentVariable("PORT") ?? "8081";
-            builder.WebHost.UseUrls($"http://*:{port}");
-
             var app = builder.Build();
 
-            //Get swagger.json following root directory 
-            app.UseSwagger(options => { options.RouteTemplate = "{documentName}/swagger.json"; });
-            //Load swagger.json following root directory 
-            app.UseSwaggerUI(c => { c.SwaggerEndpoint("/v1/swagger.json", "GameMkt.API V1"); c.RoutePrefix = string.Empty; });
-            #endregion
+            //// Configure the HTTP request pipeline.
+            if (app.Environment.IsDevelopment())
+            {
+                app.Use(async (context, next) =>
+                {
+                    if (context.Request.Path == "/")
+                    {
+                        context.Response.Redirect("/swagger/index.html");
+                        return;
+                    }
+                    await next();
+                });
+                app.UseSwagger();
+                app.UseSwaggerUI();
+            }
+
+            //#region
+            //var port = Environment.GetEnvironmentVariable("PORT") ?? "8081";
+            //builder.WebHost.UseUrls($"http://*:{port}");
+
+            //var app = builder.Build();
+
+            ////Get swagger.json following root directory 
+            //app.UseSwagger(options => { options.RouteTemplate = "{documentName}/swagger.json"; });
+            ////Load swagger.json following root directory 
+            //app.UseSwaggerUI(c => { c.SwaggerEndpoint("/v1/swagger.json", "GameMkt.API V1"); c.RoutePrefix = string.Empty; });
+            //#endregion
             //app.UseHttpsRedirection();
 
             app.UseAuthentication();

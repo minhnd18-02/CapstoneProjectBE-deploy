@@ -43,10 +43,11 @@ namespace Application.Services
 
                 var userAccountRegister = _mapper.Map<User>(userObject);
                 userAccountRegister.Password = HashPassWithSHA256.HashWithSHA256(userObject.Password);
-
-                //userAccountRegister.Role = "Customer";
+                //userAccountRegister.CreatedDatetime = DateTime.Now;
+                userAccountRegister.Role = "Customer";
                 await _unitOfWork.UserRepository.AddAsync(userAccountRegister);
-                //Create Token
+
+                // Create Token
                 var confirmationToken = new Token
                 {
                     TokenValue = Guid.NewGuid().ToString(),
@@ -56,22 +57,23 @@ namespace Application.Services
                     UserId = userAccountRegister.UserId
                 };
                 await _unitOfWork.TokenRepo.AddAsync(confirmationToken);
-                //var confirmationLink =
-                //    $"https://koifarmmanagement-axevbhdzh9edauf8.eastus-01.azurewebsites.net/confirm?token={confirmationToken.TokenValue}";
 
-                //SendMail
-                //var emailSend = await SendMail.SendConfirmationEmail(userObject.Email, confirmationLink);
-                //if (!emailSend)
-                //{
-                //    response.Success = false;
-                //    response.Message = "Error when send mail";
-                //    return response;
-                //}
+                // Construct Confirmation Link
+                var confirmationLink = $"https://localhost:50875/swagger/confirm?token={confirmationToken.TokenValue}";
+
+                // Send Mail
+                var emailSend = await EmailSender.SendConfirmationEmail(userObject.Email, confirmationLink);
+                if (!emailSend)
+                {
+                    response.Success = false;
+                    response.Message = "Error when sending mail";
+                    return response;
+                }
 
                 var accountRegistedDTO = _mapper.Map<RegisterDTO>(userAccountRegister);
                 response.Success = true;
                 response.Data = accountRegistedDTO;
-                response.Message = "Register successfully.";
+                response.Message = "Register successfully. Please check your email to confirm your account.";
             }
             catch (DbException e)
             {
@@ -88,6 +90,7 @@ namespace Application.Services
 
             return response;
         }
+
         public async Task<TokenResponse<string>> LoginAsync(LoginUserDTO userObject)
         {
             var response = new TokenResponse<string>();
@@ -108,11 +111,13 @@ namespace Application.Services
                     response.Message = "Please confirm via link in your mail";
                     return response;
                 }
+                var auth = userLogin.Role;
                 var userId = userLogin.UserId;
                 var tokenJWT = userLogin.GenerateJsonWebToken(_config, _config.JWTSection.SecretKey, DateTime.Now);
                 response.Success = true;
                 response.Message = "Login successfully";
                 response.DataToken = tokenJWT;
+                response.Role = auth;
                 response.HintId = userId;
             }
             catch (DbException ex)

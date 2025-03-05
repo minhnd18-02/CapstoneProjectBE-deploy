@@ -14,20 +14,21 @@ namespace Infrastructure
         private readonly IUserRepo _userRepository;
         private readonly ITokenRepo _tokenRepo;
         private readonly IProjectRepo _projectRepo;
+        private readonly ICategoryRepo _categoryRepo;
 
-        public UnitOfWork(ApiContext apiContext, IUserRepo userRepository, ITokenRepo tokenRepo, IProjectRepo projectRepo)
+        public UnitOfWork(ApiContext apiContext, IUserRepo userRepository, ITokenRepo tokenRepo, IProjectRepo projectRepo, ICategoryRepo categoryRepo)
         {
             _apiContext = apiContext;
             _tokenRepo = tokenRepo;
             _userRepository = userRepository;
             _projectRepo = projectRepo;
+            _categoryRepo = categoryRepo;
         }
 
         public IUserRepo UserRepository => _userRepository;
-
         public ITokenRepo TokenRepo => _tokenRepo;
-
         public IProjectRepo ProjectRepo => _projectRepo;
+        public ICategoryRepo CategoryRepo => _categoryRepo;
 
 
         public async Task<int> SaveChangeAsync()

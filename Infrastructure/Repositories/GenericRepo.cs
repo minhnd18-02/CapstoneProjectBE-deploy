@@ -24,7 +24,7 @@ namespace Infrastructure.Repositories
             _ = await _context.SaveChangesAsync();
         }
 
-        public async Task<List<T>> GetAllAsync()
+        public async Task<IEnumerable<T>> GetAllAsync()
         {
             return await _dbSet.ToListAsync();
         }

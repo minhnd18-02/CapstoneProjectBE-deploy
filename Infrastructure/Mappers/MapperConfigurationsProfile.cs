@@ -1,4 +1,5 @@
-﻿using Application.ViewModels.ProjectDTO;
+﻿using Application.ViewModels.CategoryDTO;
+using Application.ViewModels.ProjectDTO;
 using Application.ViewModels.UserDTO;
 using AutoMapper;
 using Domain.Entities;
@@ -18,6 +19,7 @@ namespace Infrastructure.Mappers
             CreateMap<User, LoginUserDTO>().ReverseMap();
             CreateMap<Project, CreateProjectDto>().ReverseMap();
             CreateMap<Project, UpdateProjectDto>().ReverseMap();
+            CreateMap<Category, AddCategory>().ReverseMap();
         }
     }
 }

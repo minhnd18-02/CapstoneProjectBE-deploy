@@ -17,6 +17,7 @@ namespace Infrastructure
             services.AddScoped<IUserRepo, UserRepo>();
             services.AddScoped<ITokenRepo, TokenRepo>();
             services.AddScoped<IProjectRepo, ProjectRepo>();
+            services.AddScoped<ICategoryRepo, CategoryRepo>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             return services;
         }

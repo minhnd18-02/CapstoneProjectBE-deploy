@@ -10,10 +10,9 @@ namespace Domain.Entities
     {
         public int CommentId { get; set; }
         public int UserId { get; set; }
-        public int ParentCommentId { get; set; }
+        public int? ParentCommentId { get; set; }
         public string Content { get; set; } = string.Empty;
-        public int like { get; set; }
-        public int dislike { get; set; }
+        public string Status { get; set; } = "Created";
         public DateTime CreatedDatetime { get; set; }
         public DateTime UpdatedDatetime { get; set; }
         public virtual User User { get; set; } = null!;

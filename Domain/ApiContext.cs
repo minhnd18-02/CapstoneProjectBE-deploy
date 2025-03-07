@@ -23,6 +23,7 @@ namespace Infrastructure
         public DbSet<Pledge> Pledges { get; set; }
         public DbSet<PledgeDetail> PledgeDetails { get; set; }
         public DbSet<ProjectComment> ProjectComments { get; set; }
+        public DbSet<PostComment> PostComments { get; set; }
         public DbSet<Reward> Rewards { get; set; }
         public DbSet<Report> Reports { get; set; }
         public DbSet<Transaction> Transactions { get; set; }

@@ -26,5 +26,9 @@ namespace Infrastructure.Repositories
                                 .Include(t => t.User)
                                 .FirstOrDefaultAsync(t => t.TokenValue == tokenValue && t.Type == type);
         }
+        public async Task<Token> GetTokenByValueAsync(String tokenValue)
+        {
+            return await _dbContext.Tokens.FirstOrDefaultAsync(t => t.TokenValue == tokenValue);
+        }
     }
 }

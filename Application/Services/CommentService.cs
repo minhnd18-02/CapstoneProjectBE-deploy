@@ -303,7 +303,7 @@ namespace Application.Services
                 existingComment.Content = updateCommentDTO.Content;
                 existingComment.UpdatedDatetime = DateTime.UtcNow;
                 existingComment.Status = "Updated";
-                await _unitOfWork.CommentRepo.Update(existingComment);
+                await _unitOfWork.CommentRepo.UpdateAsync(existingComment);
                 response.Data = "Comment updated successfully";
                 response.Success = true;
             }
@@ -357,7 +357,7 @@ namespace Application.Services
                     return response;
                 }
                 existingComment.Status = "Deleted";
-                await _unitOfWork.CommentRepo.Update(existingComment);
+                await _unitOfWork.CommentRepo.UpdateAsync(existingComment);
                 response.Data = "Comment removed successfully";
                 response.Success = true;
             }

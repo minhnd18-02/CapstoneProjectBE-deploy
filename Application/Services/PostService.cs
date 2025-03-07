@@ -187,7 +187,7 @@ namespace Application.Services
                 existingPost.Status = createPostDTO.Status;
                 existingPost.Description = createPostDTO.Description;
 
-                await _unitOfWork.PostRepo.Update(existingPost);
+                await _unitOfWork.PostRepo.UpdateAsync(existingPost);
                 response.Data = "Post updated successfully";
                 response.Success = true;
             }

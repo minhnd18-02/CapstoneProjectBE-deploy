@@ -13,6 +13,10 @@ namespace Application
         public IPledgeRepo PledgeRepo { get; }
         public ITokenRepo TokenRepo { get; }
         public IProjectRepo ProjectRepo { get; }
+        public IPostRepo PostRepo { get; }
+        public ICommentRepo CommentRepo { get; }
+        public IPostCommentRepo PostCommentRepo { get; }
+        public IProjectCommentRepo ProjectCommentRepo { get; }
         public Task<int> SaveChangeAsync();
     }
 }

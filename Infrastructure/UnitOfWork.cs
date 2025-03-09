@@ -14,14 +14,20 @@ namespace Infrastructure
         private readonly IUserRepo _userRepository;
         private readonly ITokenRepo _tokenRepo;
         private readonly IProjectRepo _projectRepo;
-        private readonly IPledgeRepo _pledgeRepo;    
-
-        public UnitOfWork(ApiContext apiContext, IUserRepo userRepository, ITokenRepo tokenRepo, IProjectRepo projectRepo, IPledgeRepo pledgeRepo)
+        private readonly IPostRepo _postRepo;
+        private readonly ICommentRepo _commentRepo;
+        private readonly IPostCommentRepo _postCommentRepo;
+        private readonly IProjectCommentRepo _projectCommentRepo;
+        public UnitOfWork(ApiContext apiContext, IUserRepo userRepository, ITokenRepo tokenRepo, IProjectRepo projectRepo, IPostRepo postRepo, ICommentRepo commentRepo, IPostCommentRepo postCommentRepo, IProjectCommentRepo projectCommentRepo, IPledgeRepo pledgeRepo)
         {
             _apiContext = apiContext;
             _tokenRepo = tokenRepo;
             _userRepository = userRepository;
             _projectRepo = projectRepo;
+            _postRepo = postRepo;
+            _commentRepo = commentRepo;
+            _postCommentRepo = postCommentRepo;
+            _projectCommentRepo = projectCommentRepo;
             _pledgeRepo = pledgeRepo;
         }
 
@@ -33,6 +39,13 @@ namespace Infrastructure
 
         public IProjectRepo ProjectRepo => _projectRepo;
 
+        public IPostRepo PostRepo => _postRepo;
+
+        public ICommentRepo CommentRepo => _commentRepo;
+        
+        public IPostCommentRepo PostCommentRepo => _postCommentRepo;
+        
+        public IProjectCommentRepo ProjectCommentRepo => _projectCommentRepo;
 
         public async Task<int> SaveChangeAsync()
         {

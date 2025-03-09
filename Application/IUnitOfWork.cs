@@ -10,6 +10,7 @@ namespace Application
     public interface IUnitOfWork
     {
         public IUserRepo UserRepository { get; }
+        public IPledgeRepo PledgeRepo { get; }
         public ITokenRepo TokenRepo { get; }
         public IProjectRepo ProjectRepo { get; }
         public IPostRepo PostRepo { get; }

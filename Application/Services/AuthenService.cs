@@ -6,11 +6,11 @@ using Application.ViewModels.UserDTO;
 using AutoMapper;
 using Domain.Entities;
 using Newtonsoft.Json.Linq;
-using PayPal.Api;
 using System;
 using System.Collections.Generic;
 using System.Data.Common;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -45,6 +45,7 @@ namespace Application.Services
                 userAccountRegister.Password = HashPassWithSHA256.HashWithSHA256(userObject.Password);
                 //userAccountRegister.CreatedDatetime = DateTime.Now;
                 userAccountRegister.Role = "Customer";
+                userAccountRegister.CreatedDatetime = DateTime.UtcNow;
                 await _unitOfWork.UserRepository.AddAsync(userAccountRegister);
 
                 // Create Token
@@ -134,6 +135,26 @@ namespace Application.Services
             }
 
             return response;
+        }
+
+        public async Task<User> GetUserByTokenAsync(ClaimsPrincipal claims)
+        {
+            if (claims == null)
+            {
+                throw new ArgumentNullException("Invalid token");
+            }
+            var userId = claims.FindFirst("Id")?.Value;
+            if (string.IsNullOrEmpty(userId) || !int.TryParse(userId, out int id))
+            {
+                throw new ArgumentException("No user can be found");
+            }
+
+            var user = await _unitOfWork.UserRepository.GetByIdAsync(id);
+            if (user == null)
+            {
+                throw new NullReferenceException("No user can be found");
+            }
+            return user;
         }
     }
 }

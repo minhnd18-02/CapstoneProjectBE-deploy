@@ -14,18 +14,22 @@ namespace Infrastructure
         private readonly IUserRepo _userRepository;
         private readonly ITokenRepo _tokenRepo;
         private readonly IProjectRepo _projectRepo;
+        private readonly IPledgeRepo _pledgeRepo;    
 
-        public UnitOfWork(ApiContext apiContext, IUserRepo userRepository, ITokenRepo tokenRepo, IProjectRepo projectRepo)
+        public UnitOfWork(ApiContext apiContext, IUserRepo userRepository, ITokenRepo tokenRepo, IProjectRepo projectRepo, IPledgeRepo pledgeRepo)
         {
             _apiContext = apiContext;
             _tokenRepo = tokenRepo;
             _userRepository = userRepository;
             _projectRepo = projectRepo;
+            _pledgeRepo = pledgeRepo;
         }
 
         public IUserRepo UserRepository => _userRepository;
 
         public ITokenRepo TokenRepo => _tokenRepo;
+
+        public IPledgeRepo PledgeRepo => _pledgeRepo;
 
         public IProjectRepo ProjectRepo => _projectRepo;
 

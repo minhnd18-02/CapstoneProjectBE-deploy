@@ -1,6 +1,7 @@
 ﻿using Application.IRepositories;
 using Application.IService;
 using Application.Services;
+using Application.Utils.Vnpay;
 using Infrastructure;
 
 namespace CapstonProjectBE
@@ -13,7 +14,9 @@ namespace CapstonProjectBE
             {
                 option.JsonSerializerOptions.PropertyNamingPolicy = new KebabCaseNamingPolicy();
             });
+            services.AddScoped<IVnpay, Vnpay>();
             services.AddScoped<IAuthenService, AuthenService>();
+            services.AddScoped<IPaymentService, PaymentService>();
             services.AddScoped<IProjectService, ProjectService>();
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen();

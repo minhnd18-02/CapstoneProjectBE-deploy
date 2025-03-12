@@ -68,7 +68,7 @@ namespace CapstonProjectBE.Controllers
             return Ok(response);
         }
 
-        [Authorize(Roles = "Customer, Admin")]
+        [Authorize(Roles = "Customer")]
         [HttpPost("UpdateUser")]
         public async Task<IActionResult> UpdateUser([FromBody] UpdateUserDTO UpdateUser)
         {
@@ -86,13 +86,14 @@ namespace CapstonProjectBE.Controllers
         }
 
         [Authorize(Roles = "Customer")]
-        [HttpPut("{userId}/avatar")]
-        public async Task<IActionResult> UpdateUserAvatar(int userId, IFormFile file)
+        [HttpPut("avatar")]
+        public async Task<IActionResult> UpdateUserAvatar(IFormFile file)
         {
-            var user = await _context.Users.FindAsync(userId);
-            if (user == null)
-                return NotFound("User not found");
-
+            var AuthorizeUser = await _authenService.GetUserByTokenAsync(HttpContext.User);
+            if (AuthorizeUser == null)
+            {
+                return Unauthorized();
+            }
             var uploadResult = new ImageUploadResult();
 
             if (file.Length > 0)
@@ -112,10 +113,10 @@ namespace CapstonProjectBE.Controllers
                 return BadRequest("Could not upload image");
 
             // Update the image URL in the database
-            user.Avatar = uploadResult.Url.ToString();
+            AuthorizeUser.Avatar = uploadResult.Url.ToString();
             await _context.SaveChangesAsync();
 
-            return Ok(new { imageUrl = user.Avatar });
+            return Ok(new { imageUrl = AuthorizeUser.Avatar });
         }
     }
 }

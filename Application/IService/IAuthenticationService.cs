@@ -15,5 +15,6 @@ namespace Application.IService
         public Task<ServiceResponse<RegisterDTO>> RegisterAsync(RegisterDTO userObject);
         public Task<TokenResponse<string>> LoginAsync(LoginUserDTO userObject);
         public Task<User> GetUserByTokenAsync(ClaimsPrincipal claims);
+        public Task<ServiceResponse<string>> ResendConfirmationTokenAsync(string email);
     }
 }

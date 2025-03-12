@@ -18,7 +18,7 @@ namespace CapstonProjectBE.Controllers
         }
         [Authorize]
         [HttpPost]
-        public async Task<IActionResult> CreatePostComment(CreatePostCommentDTO createPostCommentDTO)
+        public async Task<IActionResult> CreatePostComment([FromBody] CreatePostCommentDTO createPostCommentDTO)
         {
             var result = await _commentService.CreatePostComment(createPostCommentDTO);
             if (!result.Success)

@@ -32,7 +32,8 @@ namespace Application.Services
             {
                 Domain.Entities.Pledge pledge = new Domain.Entities.Pledge 
                 {
-                    UserId = 27,
+                    PledgeId = 0,
+                    UserId = 26,
                     Amount = amount,
                     ProjectId = projectId
                 };
@@ -124,7 +125,7 @@ namespace Application.Services
 
                 var payment = Payment.Get(apiContext, paymentId);
 
-                if (payment == null || string.IsNullOrEmpty(payment.state) || !(payment.transactions.Count > 0) || !int.TryParse(payment.transactions.First().custom, out int userId) || !(userId > 0) || !int.TryParse(payment.transactions.First().invoice_number, out int orderId) || !(orderId > 0))
+                if (payment == null || string.IsNullOrEmpty(payment.state) || !(payment.transactions.Count > 0) || !int.TryParse(payment.transactions.First().custom, out int userId) || !(userId > 0) || !int.TryParse(payment.transactions.First().invoice_number, out int orderId))
                 {
                     response.Success = false;
                     response.Message = "Payment not found or invalid.";

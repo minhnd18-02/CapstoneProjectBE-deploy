@@ -13,5 +13,7 @@ namespace Application.IRepositories
         Task AddAsync(T entity);
         Task UpdateAsync(T entity);
         Task Remove(T entity);
+        Task DeleteTokenAsync(T entity);
+
     }
 }

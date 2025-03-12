@@ -22,7 +22,7 @@ namespace CapstonProjectBE.Controllers
         public async Task<IActionResult> CreatePayment(int projectId, decimal amount)
         {
             //var user = await _authenService.GetUserByTokenAsync(HttpContext.User);
-            var result = await _paypalPaymentService.CreatePaymentAsync(projectId, amount, "http://localhost:3000/payment", "http://localhost:3000/user/cart");
+            var result = await _paypalPaymentService.CreatePaymentAsync(projectId, amount, "http://localhost:50875/payment", "http://localhost:50875/user/cart");
 
             if (!result.Success)
             {

@@ -27,6 +27,5 @@ namespace Domain.Entities
         public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();
         public virtual ICollection<Collaborator> Collaborators { get; set; } = new List<Collaborator>();
         public virtual ICollection<Project> Projects { get; set; } = new List<Project>();
-        public virtual ICollection<PaymentLinkInformation> PaymentLinkInformations { get; set; } = new List<PaymentLinkInformation>();
     }
 }

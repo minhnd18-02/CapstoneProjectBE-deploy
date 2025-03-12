@@ -155,5 +155,65 @@ namespace Application.Services
             }
             return user;
         }
+        public async Task<ServiceResponse<string>> ResendConfirmationTokenAsync(string email)
+        {
+            var response = new ServiceResponse<string>();
+            try
+            {
+                var user = await _unitOfWork.UserRepo.GetByEmailAsync(email);
+                if (user == null)
+                {
+                    response.Success = false;
+                    response.Error = "Không tìm thấy người dùng với email này.";
+                    return response;
+                }
+                var token = await _unitOfWork.TokenRepo.FindByConditionAsync(user.UserId, "confirmation");
+                if (token != null && token.TokenValue == "success")
+                {
+                    response.Success = false;
+                    response.Message = "Email của bạn đã được xác nhận.";
+                    return response;
+                }
+                if (DateTime.UtcNow > token.ExpiresAt)
+                {
+                    await _unitOfWork.TokenRepo.DeleteTokenAsync(token);
+                    var newToken = new Token
+                    {
+                        TokenValue = Guid.NewGuid().ToString(),
+                        Type = "confirmation",
+                        CreatedAt = DateTime.UtcNow,
+                        ExpiresAt = DateTime.UtcNow.AddMinutes(10),
+                        UserId = user.UserId
+                    };
+
+                    await _unitOfWork.TokenRepo.AddAsync(newToken);
+
+                    var confirmationLink = $"https://koifarmmanagement-axevbhdzh9edauf8.eastus-01.azurewebsites.net/confirm?token={newToken.TokenValue}";
+                    var emailSend = await EmailSender.SendConfirmationEmail(user.Email, confirmationLink);
+
+                    if (!emailSend)
+                    {
+                        response.Success = false;
+                        response.Message = "Gửi email thất bại.";
+                        return response;
+                    }
+
+                    response.Success = true;
+                    response.Message = "Email xác nhận mới đã được gửi.";
+                }
+                else
+                {
+                    response.Success = false;
+                    response.Message = "Token xác nhận của bạn vẫn còn hiệu lực. Vui lòng kiểm tra email.";
+                }
+            }
+            catch (Exception e)
+            {
+                response.Success = false;
+                response.Message = "Đã xảy ra lỗi.";
+                response.ErrorMessages = new List<string> { e.Message };
+            }
+            return response;
+        }
     }
 }

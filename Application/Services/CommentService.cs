@@ -39,7 +39,7 @@ namespace Application.Services
                     return response;
                 }
 
-                var existingUser = await _unitOfWork.UserRepository.GetByIdAsync(createPostCommentDTO.UserId);
+                var existingUser = await _unitOfWork.UserRepo.GetByIdAsync(createPostCommentDTO.UserId);
                 if (existingUser == null)
                 {
                     response.Success = false;
@@ -108,7 +108,7 @@ namespace Application.Services
                     return response;
                 }
 
-                var existingUser = await _unitOfWork.UserRepository.GetByIdAsync(createProjectCommentDTO.UserId);
+                var existingUser = await _unitOfWork.UserRepo.GetByIdAsync(createProjectCommentDTO.UserId);
                 if (existingUser == null)
                 {
                     response.Success = false;

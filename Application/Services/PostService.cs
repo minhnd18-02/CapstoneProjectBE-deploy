@@ -39,7 +39,7 @@ namespace Application.Services
                     return response;
                 }
 
-                var existingUser = await _unitOfWork.UserRepository.GetByIdAsync(createPostDTO.UserId);
+                var existingUser = await _unitOfWork.UserRepo.GetByIdAsync(createPostDTO.UserId);
                 if (existingUser == null)
                 {
                     response.Success = false;

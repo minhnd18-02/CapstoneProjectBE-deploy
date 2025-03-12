@@ -18,6 +18,8 @@ namespace CapstonProjectBE
             services.AddScoped<IAuthenService, AuthenService>();
             services.AddScoped<IPaymentService, PaymentService>();
             services.AddScoped<IProjectService, ProjectService>();
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IPaypalPaymentService,  PaypalPaymentService>();
             services.AddScoped<IPostService, PostService>();
             services.AddScoped<ICommentService, CommentService>();
             services.AddEndpointsApiExplorer();

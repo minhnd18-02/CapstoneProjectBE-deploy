@@ -11,7 +11,7 @@ namespace Infrastructure
     public class UnitOfWork : IUnitOfWork
     {
         private readonly ApiContext _apiContext;
-        private readonly IUserRepo _userRepository;
+        private readonly IUserRepo _userRepo;
         private readonly ITokenRepo _tokenRepo;
         private readonly IProjectRepo _projectRepo;
         private readonly IPostRepo _postRepo;
@@ -19,11 +19,11 @@ namespace Infrastructure
         private readonly IPostCommentRepo _postCommentRepo;
         private readonly IPledgeRepo _pledgeRepo;
         private readonly IProjectCommentRepo _projectCommentRepo;
-        public UnitOfWork(ApiContext apiContext, IUserRepo userRepository, ITokenRepo tokenRepo, IProjectRepo projectRepo, IPostRepo postRepo, ICommentRepo commentRepo, IPostCommentRepo postCommentRepo, IProjectCommentRepo projectCommentRepo, IPledgeRepo pledgeRepo)
+        public UnitOfWork(ApiContext apiContext, IUserRepo userRepo, ITokenRepo tokenRepo, IProjectRepo projectRepo, IPostRepo postRepo, ICommentRepo commentRepo, IPostCommentRepo postCommentRepo, IProjectCommentRepo projectCommentRepo, IPledgeRepo pledgeRepo)
         {
             _apiContext = apiContext;
             _tokenRepo = tokenRepo;
-            _userRepository = userRepository;
+            _userRepo = userRepo;
             _projectRepo = projectRepo;
             _postRepo = postRepo;
             _commentRepo = commentRepo;
@@ -32,7 +32,7 @@ namespace Infrastructure
             _pledgeRepo = pledgeRepo;
         }
 
-        public IUserRepo UserRepository => _userRepository;
+        public IUserRepo UserRepo => _userRepo;
 
         public ITokenRepo TokenRepo => _tokenRepo;
 

@@ -33,7 +33,7 @@ namespace Application.Services
             var response = new ServiceResponse<RegisterDTO>();
             try
             {
-                var existEmail = await _unitOfWork.UserRepository.CheckEmailAddressExisted(userObject.Email);
+                var existEmail = await _unitOfWork.UserRepo.CheckEmailAddressExisted(userObject.Email);
                 if (existEmail)
                 {
                     response.Success = false;
@@ -43,10 +43,9 @@ namespace Application.Services
 
                 var userAccountRegister = _mapper.Map<User>(userObject);
                 userAccountRegister.Password = HashPassWithSHA256.HashWithSHA256(userObject.Password);
-                //userAccountRegister.CreatedDatetime = DateTime.Now;
                 userAccountRegister.Role = "Customer";
                 userAccountRegister.CreatedDatetime = DateTime.UtcNow;
-                await _unitOfWork.UserRepository.AddAsync(userAccountRegister);
+                await _unitOfWork.UserRepo.AddAsync(userAccountRegister);
 
                 // Create Token
                 var confirmationToken = new Token
@@ -98,7 +97,7 @@ namespace Application.Services
             try
             {
                 var passHash = HashPassWithSHA256.HashWithSHA256(userObject.Password);
-                var userLogin = await _unitOfWork.UserRepository.GetUserByEmailAddressAndPasswordHash(userObject.Username, passHash);
+                var userLogin = await _unitOfWork.UserRepo.GetUserByEmailAddressAndPasswordHash(userObject.Username, passHash);
                 if (userLogin == null)
                 {
                     response.Success = false;
@@ -149,7 +148,7 @@ namespace Application.Services
                 throw new ArgumentException("No user can be found");
             }
 
-            var user = await _unitOfWork.UserRepository.GetByIdAsync(id);
+            var user = await _unitOfWork.UserRepo.GetByIdAsync(id);
             if (user == null)
             {
                 throw new NullReferenceException("No user can be found");

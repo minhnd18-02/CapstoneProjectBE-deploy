@@ -18,8 +18,11 @@ namespace Infrastructure.Mappers
         {
             CreateMap<User, RegisterDTO>().ReverseMap();
             CreateMap<User, LoginUserDTO>().ReverseMap();
+            CreateMap<User, UserDTO>().ReverseMap();
+            CreateMap<User, UpdateUserDTO>().ReverseMap();
             CreateMap<Project, CreateProjectDto>().ReverseMap();
             CreateMap<Project, UpdateProjectDto>().ReverseMap();
+
             CreateMap<User, PostUserDTO>()
                 .ForMember(dest => dest.Fullname, opt => opt.MapFrom(src => src.Fullname))
                 .ForMember(dest => dest.Avatar, opt => opt.MapFrom(src => src.Avatar ?? string.Empty))

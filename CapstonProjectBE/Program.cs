@@ -20,6 +20,8 @@ using System;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
+using System.Runtime.InteropServices;
+using Application.ViewModels;
 
 namespace CapstonProjectBE
 {
@@ -38,6 +40,15 @@ namespace CapstonProjectBE
             builder.Services.AddDbContext<ApiContext>(options =>
             {
                 options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
+            });
+            builder.Services.Configure<Cloud>(configuration.GetSection("Cloudinary"));
+            builder.Services.AddSingleton(provider =>
+            {
+                var config = provider.GetRequiredService<IOptions<Cloud>>().Value;
+                return new Cloudinary(new Account(
+                    config.CloudName,
+                    config.ApiKey,
+                    config.ApiSecret));
             });
             builder.Services.AddSingleton(myConfig);
             builder.Services.AddInfrastructuresService();

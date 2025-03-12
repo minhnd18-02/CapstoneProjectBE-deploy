@@ -3,6 +3,7 @@ using Application.Utils.Vnpay;
 using Application.ViewModels.VnpayDTO;
 using Domain.Entities;
 using Domain.Enums.VnpayEnums;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -27,13 +28,18 @@ namespace CapstonProjectBE.Controllers
         /// <param name="money">Số tiền phải thanh toán</param>
         /// <param name="description">Mô tả giao dịch</param>
         /// <returns></returns>
+        [Authorize(Roles = "Customer")]
         [HttpGet("CreatePaymentUrl")]
         public async Task<IActionResult> CreatePaymentUrl(double money, string description,[FromQuery] int projectId)
         {
-            //var user = await _authenService.GetUserByTokenAsync(HttpContext.User);
+            var user = await _authenService.GetUserByTokenAsync(HttpContext.User);
+            if (user == null)
+            {
+                return Unauthorized();
+            }
             try
             {
-                var paymentUrl = _paymentService.CreatePaymentUrl(money, description, HttpContext, projectId);
+                var paymentUrl = await _paymentService.CreatePaymentUrl(money, description, HttpContext, projectId, user.UserId);
                 return Created(paymentUrl, paymentUrl);
             }
             catch (Exception ex)

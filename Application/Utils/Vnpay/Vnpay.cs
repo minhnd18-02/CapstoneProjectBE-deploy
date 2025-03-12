@@ -1,4 +1,5 @@
 ﻿using Application.ViewModels.VnpayDTO;
+using Domain.Entities;
 using Domain.Enums.VnpayEnums;
 using Microsoft.AspNetCore.Http;
 using System.Globalization;
@@ -117,6 +118,11 @@ namespace Application.Utils.Vnpay
 
             var responseCode = (ResponseCode)sbyte.Parse(vnp_ResponseCode);
             var transactionStatusCode = (TransactionStatusCode)sbyte.Parse(vnp_TransactionStatus);
+
+            //if (responseCode == ResponseCode.Code_00 || transactionStatusCode == TransactionStatusCode.Code_00)
+            //{
+
+            //}
 
             return new PaymentResult
             {

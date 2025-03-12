@@ -9,7 +9,7 @@ namespace Application
 {
     public interface IUnitOfWork
     {
-        public IUserRepo UserRepository { get; }
+        public IUserRepo UserRepo { get; }
         public IPledgeRepo PledgeRepo { get; }
         public ITokenRepo TokenRepo { get; }
         public IProjectRepo ProjectRepo { get; }

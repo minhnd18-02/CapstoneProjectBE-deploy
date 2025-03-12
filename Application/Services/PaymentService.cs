@@ -21,17 +21,19 @@ namespace Application.Services
     public class PaymentService : IPaymentService
     {
         private readonly IVnpay _vnpay;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly IConfiguration _configuration;
 
-        public PaymentService(IVnpay vnPayservice, IConfiguration configuration)
+        public PaymentService(IVnpay vnPayservice, IConfiguration configuration, IUnitOfWork unitOfWork)
         {
             _vnpay = vnPayservice;
             _configuration = configuration;
+            _unitOfWork = unitOfWork;
 
             _vnpay.Initialize(_configuration["Vnpay:TmnCode"], _configuration["Vnpay:HashSecret"], _configuration["Vnpay:BaseUrl"], _configuration["Vnpay:CallbackUrl"]);
         }
 
-        public string CreatePaymentUrl(double money, string description, HttpContext httpContext, int projectId)
+        public async Task<string> CreatePaymentUrl(double money, string description, HttpContext httpContext, int projectId, int userId)
         {
             var ipAddress = NetworkHelper.GetIpAddress(httpContext); // Lấy địa chỉ IP của thiết bị thực hiện giao dịch
 
@@ -46,10 +48,14 @@ namespace Application.Services
                 Currency = Currency.VND, // Tùy chọn. Mặc định là VND (Việt Nam đồng)
                 Language = DisplayLanguage.Vietnamese // Tùy chọn. Mặc định là tiếng Việt
             };
-            //Pledge pledge = new Pledge();
-            //pledge.Amount = (decimal)money;
-            //pledge.ProjectId = projectId;
-            //pledge.UserId = userId;
+            Pledge pledge = new Pledge 
+            {
+                Amount = (decimal)money,
+                ProjectId = projectId,
+                UserId = userId
+            };
+
+            await _unitOfWork.PledgeRepo.AddAsync(pledge);
             return _vnpay.GetPaymentUrl(request);
         }
 

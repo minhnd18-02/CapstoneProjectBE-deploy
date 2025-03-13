@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Domain.Migrations
 {
     [DbContext(typeof(ApiContext))]
-    [Migration("20250312045228_minecraft")]
-    partial class minecraft
+    [Migration("20250312085228_Grissini")]
+    partial class Grissini
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -194,8 +194,8 @@ namespace Domain.Migrations
                     b.Property<int>("PledgeId")
                         .HasColumnType("integer");
 
-                    b.Property<int>("PaymentId")
-                        .HasColumnType("integer");
+                    b.Property<string>("PaymentId")
+                        .HasColumnType("text");
 
                     b.Property<string>("Status")
                         .IsRequired()

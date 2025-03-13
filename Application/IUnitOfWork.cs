@@ -17,6 +17,7 @@ namespace Application
         public ICommentRepo CommentRepo { get; }
         public IPostCommentRepo PostCommentRepo { get; }
         public IProjectCommentRepo ProjectCommentRepo { get; }
+        public IPledgeDetailRepo PledgeDetailRepo { get; }
         public Task<int> SaveChangeAsync();
     }
 }

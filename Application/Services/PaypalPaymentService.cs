@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Domain.Entities;
 
 namespace Application.Services
 {
@@ -24,20 +25,14 @@ namespace Application.Services
             _mapper = mapper;
             _unitOfWork = unitOfWork;
         }
-        public async Task<ServiceResponse<string>> CreatePaymentAsync(int projectId, decimal amount, string returnUrl, string cancelUrl)
+        public async Task<ServiceResponse<string>> CreatePaymentAsync(int userId, int projectId, decimal amount, string returnUrl, string cancelUrl)
         {
             var response = new ServiceResponse<string>();
 
             try
             {
-                Domain.Entities.Pledge pledge = new Domain.Entities.Pledge 
-                {
-                    PledgeId = 0,
-                    UserId = 26,
-                    Amount = amount,
-                    ProjectId = projectId
-                };
 
+                //var getPledge = await _unitOfWork.PledgeRepo.GetPledgeByUserIdAndProjectIdAsync(userId, projectId);
                 decimal conversionRate = 23000m;
                 decimal totalAmountVND = amount;
                 decimal totalAmountUSD = totalAmountVND / conversionRate;
@@ -56,14 +51,15 @@ namespace Application.Services
             {
                 new Transaction
                 {
-                    description = $"Pledge {pledge.PledgeId} - Payment",
-                    invoice_number = pledge.PledgeId.ToString(),
+                    description = $"Pledge to project {projectId} by user {userId} - Payment",
+                    invoice_number = $"P{projectId}-U{userId}",
                     amount = new Amount
                     {
                         currency = "USD",
                         total = totalAmountInUSD
                     },
-                    custom = pledge.UserId.ToString()
+                    note_to_payee = projectId.ToString(),
+                    custom = userId.ToString()
                 }
             },
                     redirect_urls = new RedirectUrls
@@ -97,7 +93,6 @@ namespace Application.Services
                     response.Success = false;
                     response.Message = "Failed to create payment.";
                 }
-
             }
             catch (PayPalException payPalEx)
             {
@@ -125,7 +120,7 @@ namespace Application.Services
 
                 var payment = Payment.Get(apiContext, paymentId);
 
-                if (payment == null || string.IsNullOrEmpty(payment.state) || !(payment.transactions.Count > 0) || !int.TryParse(payment.transactions.First().custom, out int userId) || !(userId > 0) || !int.TryParse(payment.transactions.First().invoice_number, out int orderId))
+                if (payment == null || string.IsNullOrEmpty(payment.state) || !(payment.transactions.Count > 0) || !int.TryParse(payment.transactions.First().custom, out int userId) || !(userId > 0) || !int.TryParse(payment.transactions.First().note_to_payee, out int projectId))
                 {
                     response.Success = false;
                     response.Message = "Payment not found or invalid.";
@@ -139,10 +134,10 @@ namespace Application.Services
                     return response;
                 }
 
-                var pledgeitem = await ValidatePledge(userId);
+                var pledgeitem = await ValidatePledge(1);
                 var pledge = pledgeitem.Item1;
 
-                if (!string.IsNullOrEmpty(errorMessage) || pledge == null || pledge.PledgeId != orderId)
+                if (!string.IsNullOrEmpty(errorMessage) || pledge == null)
                 {
                     if (payment.state == "authorized")
                     {
@@ -155,9 +150,43 @@ namespace Application.Services
 
                 }
 
-                //order.OrderStatus = true;
-                //order.OrderDate = DateTime.Now;
-                await _unitOfWork.PledgeRepo.UpdateAsync(pledge);
+                var existingPledge = await _unitOfWork.PledgeRepo.GetPledgeByUserIdAndProjectIdAsync(userId, projectId);
+
+                if (existingPledge == null)
+                {
+                    Domain.Entities.Pledge newPledge = new Domain.Entities.Pledge
+                    {
+                        UserId = userId,
+                        Amount = 0,
+                        ProjectId = projectId
+                    };
+
+                    await _unitOfWork.PledgeRepo.AddAsync(pledge);
+
+                    Domain.Entities.PledgeDetail pledgeDetail = new Domain.Entities.PledgeDetail
+                    {
+                        PledgeId = pledge.PledgeId,
+                        PaymentId = paymentId,
+                        Status = "pledged"
+                    };
+
+                    await _unitOfWork.PledgeDetailRepo.AddAsync(pledgeDetail);
+                }
+                else
+                {
+                    existingPledge.Amount += decimal.Parse(payment.transactions.First().amount.total);
+                    await _unitOfWork.PledgeRepo.UpdateAsync(existingPledge);
+
+                    Domain.Entities.PledgeDetail pledgeDetail = new Domain.Entities.PledgeDetail
+                    {
+                        PledgeId = pledge.PledgeId,
+                        PaymentId = paymentId,
+                        Status = "pledged"
+                    };
+
+                    await _unitOfWork.PledgeDetailRepo.AddAsync(pledgeDetail);
+
+                }
 
                 // Prepare to execute the payment
                 var paymentExecution = new PaymentExecution() { payer_id = payerId };

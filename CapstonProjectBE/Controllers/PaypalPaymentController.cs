@@ -19,10 +19,15 @@ namespace CapstonProjectBE.Controllers
         }
 
         [HttpPost("create")]
+        [Authorize(Roles = "Customer")]
         public async Task<IActionResult> CreatePayment(int projectId, decimal amount)
         {
-            //var user = await _authenService.GetUserByTokenAsync(HttpContext.User);
-            var result = await _paypalPaymentService.CreatePaymentAsync(projectId, amount, "http://localhost:50875/payment", "http://localhost:50875/user/cart");
+            var user = await _authenService.GetUserByTokenAsync(HttpContext.User);
+            if (user == null)
+            {
+                return Unauthorized();
+            }
+            var result = await _paypalPaymentService.CreatePaymentAsync(user.UserId, projectId, amount, "http://localhost:50875/payment", "http://localhost:50875/user/cart");
 
             if (!result.Success)
             {
@@ -32,7 +37,7 @@ namespace CapstonProjectBE.Controllers
         }
 
         [HttpGet("execute")]
-        [AllowAnonymous]
+        [Authorize(Roles = "Customer")]
         public async Task<IActionResult> ExecutePayment([FromQuery] string paymentId, [FromQuery] string token, [FromQuery] string PayerID)
         {
             var result = await _paypalPaymentService.ExecutePaymentAsync(paymentId, PayerID);

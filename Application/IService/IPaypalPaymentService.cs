@@ -11,7 +11,7 @@ namespace Application.IService
 {
     public interface IPaypalPaymentService
     {
-        Task<ServiceResponse<string>> CreatePaymentAsync(int projectId, decimal amount, string returnUrl, string cancelUrl);
+        Task<ServiceResponse<string>> CreatePaymentAsync(int userId, int projectId, decimal amount, string returnUrl, string cancelUrl);
         Task<ServiceResponse<Payment>> ExecutePaymentAsync(string paymentId, string payerId);
     }
 }

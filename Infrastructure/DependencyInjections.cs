@@ -18,6 +18,7 @@ namespace Infrastructure
             services.AddScoped<ITokenRepo, TokenRepo>();
             services.AddScoped<IPledgeRepo, PledgeRepo>();
             services.AddScoped<IProjectRepo, ProjectRepo>();
+            services.AddScoped<IPledgeDetailRepo, PledgeDetailRepo>();
             services.AddScoped<IPostRepo, PostRepo>();
             services.AddScoped<ICommentRepo, CommentRepo>();
             services.AddScoped<IPostCommentRepo, PostCommentRepo>();

@@ -10,7 +10,7 @@ namespace Domain.Entities
     public class PledgeDetail
     {
         public int PledgeId { get; set; }
-        public int PaymentId { get; set; }
+        public string PaymentId { get; set; } = string.Empty;
         public string Status { get; set; } = string.Empty;
 
         public virtual Pledge Pledge { get; set; } = null!;

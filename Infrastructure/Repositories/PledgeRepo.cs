@@ -1,5 +1,6 @@
 ﻿using Application.IRepositories;
 using Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,6 +21,11 @@ namespace Infrastructure.Repositories
         public async Task<Pledge> GetPledgeByIdAsync(int id)
         {
             return await _context.Pledges.FindAsync(id);
+        }
+        public async Task<Pledge> GetPledgeByUserIdAndProjectIdAsync(int userId, int projectId)
+        {
+            return await _context.Pledges
+                .FirstOrDefaultAsync(p => p.UserId == userId && p.ProjectId == projectId);
         }
     }
 }

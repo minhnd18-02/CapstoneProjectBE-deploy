@@ -13,6 +13,9 @@ namespace Application
         public IPledgeRepo PledgeRepo { get; }
         public ITokenRepo TokenRepo { get; }
         public IProjectRepo ProjectRepo { get; }
+        public ICategoryRepo CategoryRepo { get; }
+        public IRewardRepo RewardRepo { get; }
+        public IGoalRepo GoalRepo { get; }
         public IPostRepo PostRepo { get; }
         public ICommentRepo CommentRepo { get; }
         public IPostCommentRepo PostCommentRepo { get; }

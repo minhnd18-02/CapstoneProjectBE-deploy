@@ -7,9 +7,7 @@ using System.Threading.Tasks;
 
 namespace Application.IRepositories
 {
-    public interface IPledgeRepo : IGenericRepo<Pledge>
+    public interface IPledgeDetailRepo : IGenericRepo<PledgeDetail>
     {
-        Task<Pledge> GetPledgeByIdAsync(int id);
-        Task<Pledge> GetPledgeByUserIdAndProjectIdAsync(int userId, int projectId);
     }
 }

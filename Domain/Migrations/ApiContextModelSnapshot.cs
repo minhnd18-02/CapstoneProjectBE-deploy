@@ -192,8 +192,8 @@ namespace Domain.Migrations
                     b.Property<int>("PledgeId")
                         .HasColumnType("integer");
 
-                    b.Property<int>("PaymentId")
-                        .HasColumnType("integer");
+                    b.Property<string>("PaymentId")
+                        .HasColumnType("text");
 
                     b.Property<string>("Status")
                         .IsRequired()

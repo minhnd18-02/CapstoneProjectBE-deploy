@@ -32,6 +32,10 @@ namespace Infrastructure.Repositories
                 .FirstOrDefaultAsync(record => record.Email == email && record.Password == passwordHash);
             return user;
         }
+        public async Task<IEnumerable<User>> GetAllUser()
+        {
+            return await _dbContext.Users.Where(u => u.Role == "Customer" || u.Role == "Staff").ToListAsync();
+        }
         public int GetCount()
         {
             return _dbContext.Users.Count();

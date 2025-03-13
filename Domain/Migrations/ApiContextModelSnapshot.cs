@@ -77,19 +77,17 @@ namespace Domain.Migrations
                     b.Property<DateTime>("CreatedDatetime")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("ParentCommentId")
+                    b.Property<int?>("ParentCommentId")
                         .HasColumnType("integer");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<DateTime>("UpdatedDatetime")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<int>("UserId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("dislike")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("like")
                         .HasColumnType("integer");
 
                     b.HasKey("CommentId");
@@ -143,53 +141,6 @@ namespace Domain.Migrations
                     b.ToTable("Goals");
                 });
 
-            modelBuilder.Entity("Domain.Entities.PaymentLinkInformation", b =>
-                {
-                    b.Property<int>("PaymentLinkInformationId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("PaymentLinkInformationId"));
-
-                    b.Property<int>("Amount")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("AmountPaid")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("AmountRemaining")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("CancelAt")
-                        .HasColumnType("text");
-
-                    b.Property<string>("CancellationReason")
-                        .HasColumnType("text");
-
-                    b.Property<string>("CreateAt")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Id")
-                        .HasColumnType("text");
-
-                    b.Property<long>("OrderCode")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("PaymentLinkInformationId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("PaymentLinkInformations");
-                });
-
             modelBuilder.Entity("Domain.Entities.Platform", b =>
                 {
                     b.Property<int>("PlatformId")
@@ -212,21 +163,26 @@ namespace Domain.Migrations
 
             modelBuilder.Entity("Domain.Entities.Pledge", b =>
                 {
-                    b.Property<int>("UserId")
+                    b.Property<int>("PledgeId")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
 
-                    b.Property<int>("ProjectId")
-                        .HasColumnType("integer");
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("PledgeId"));
 
                     b.Property<decimal>("Amount")
                         .HasColumnType("numeric");
 
-                    b.Property<int>("PledgeId")
+                    b.Property<int>("ProjectId")
                         .HasColumnType("integer");
 
-                    b.HasKey("UserId", "ProjectId");
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("PledgeId");
 
                     b.HasIndex("ProjectId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Pledges");
                 });
@@ -236,21 +192,14 @@ namespace Domain.Migrations
                     b.Property<int>("PledgeId")
                         .HasColumnType("integer");
 
-                    b.Property<int>("PaymentLinkInformationId")
-                        .HasColumnType("integer");
+                    b.Property<string>("PaymentId")
+                        .HasColumnType("text");
 
-                    b.Property<int>("PledgeProjectId")
-                        .HasColumnType("integer");
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("text");
 
-                    b.Property<int>("PledgeUserId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("PledgeId", "PaymentLinkInformationId");
-
-                    b.HasIndex("PaymentLinkInformationId")
-                        .IsUnique();
-
-                    b.HasIndex("PledgeUserId", "PledgeProjectId");
+                    b.HasKey("PledgeId", "PaymentId");
 
                     b.ToTable("PledgeDetails");
                 });
@@ -308,7 +257,7 @@ namespace Domain.Migrations
 
                     b.HasIndex("PostId");
 
-                    b.ToTable("PostComment");
+                    b.ToTable("PostComments");
                 });
 
             modelBuilder.Entity("Domain.Entities.Project", b =>
@@ -487,61 +436,6 @@ namespace Domain.Migrations
                     b.ToTable("Tokens");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Transaction", b =>
-                {
-                    b.Property<int>("TransactionId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("TransactionId"));
-
-                    b.Property<string>("AccountNumber")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int>("Amount")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("CounterAccountBankId")
-                        .HasColumnType("text");
-
-                    b.Property<string>("CounterAccountBankName")
-                        .HasColumnType("text");
-
-                    b.Property<string>("CounterAccountName")
-                        .HasColumnType("text");
-
-                    b.Property<string>("CounterAccountNumber")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int>("PaymentLinkInformationId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("Reference")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("TransactionDateTime")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("VirtualAccountName")
-                        .HasColumnType("text");
-
-                    b.Property<string>("VirtualAccountNumber")
-                        .HasColumnType("text");
-
-                    b.HasKey("TransactionId");
-
-                    b.HasIndex("PaymentLinkInformationId");
-
-                    b.ToTable("Transactions");
-                });
-
             modelBuilder.Entity("Domain.Entities.User", b =>
                 {
                     b.Property<int>("UserId")
@@ -622,8 +516,7 @@ namespace Domain.Migrations
                     b.HasOne("Domain.Entities.Comment", "ParentComment")
                         .WithMany("Comments")
                         .HasForeignKey("ParentCommentId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("Domain.Entities.User", "User")
                         .WithMany("Comments")
@@ -658,17 +551,6 @@ namespace Domain.Migrations
                     b.Navigation("Project");
                 });
 
-            modelBuilder.Entity("Domain.Entities.PaymentLinkInformation", b =>
-                {
-                    b.HasOne("Domain.Entities.User", "User")
-                        .WithMany("PaymentLinkInformations")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("Domain.Entities.Pledge", b =>
                 {
                     b.HasOne("Domain.Entities.Project", "Project")
@@ -690,19 +572,11 @@ namespace Domain.Migrations
 
             modelBuilder.Entity("Domain.Entities.PledgeDetail", b =>
                 {
-                    b.HasOne("Domain.Entities.PaymentLinkInformation", "PaymentLinkInformation")
-                        .WithOne("PledgeDetail")
-                        .HasForeignKey("Domain.Entities.PledgeDetail", "PaymentLinkInformationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("Domain.Entities.Pledge", "Pledge")
                         .WithMany("PledgeDetails")
-                        .HasForeignKey("PledgeUserId", "PledgeProjectId")
+                        .HasForeignKey("PledgeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("PaymentLinkInformation");
 
                     b.Navigation("Pledge");
                 });
@@ -844,17 +718,6 @@ namespace Domain.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Transaction", b =>
-                {
-                    b.HasOne("Domain.Entities.PaymentLinkInformation", "PaymentLinkInformation")
-                        .WithMany("Transactions")
-                        .HasForeignKey("PaymentLinkInformationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("PaymentLinkInformation");
-                });
-
             modelBuilder.Entity("Domain.Entities.Category", b =>
                 {
                     b.Navigation("Categories");
@@ -869,14 +732,6 @@ namespace Domain.Migrations
                     b.Navigation("PostComment");
 
                     b.Navigation("ProjectComment");
-                });
-
-            modelBuilder.Entity("Domain.Entities.PaymentLinkInformation", b =>
-                {
-                    b.Navigation("PledgeDetail")
-                        .IsRequired();
-
-                    b.Navigation("Transactions");
                 });
 
             modelBuilder.Entity("Domain.Entities.Platform", b =>
@@ -920,8 +775,6 @@ namespace Domain.Migrations
                     b.Navigation("Comments");
 
                     b.Navigation("Files");
-
-                    b.Navigation("PaymentLinkInformations");
 
                     b.Navigation("Pledges");
 

@@ -13,7 +13,6 @@ namespace Infrastructure
         public ApiContext(DbContextOptions<ApiContext> options) : base(options)
         { }
 
-        public DbSet<PaymentLinkInformation> PaymentLinkInformations { get; set; }
         public DbSet<ProjectCategory> ProjectCategories { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Collaborator> Collaborators { get; set; }
@@ -23,9 +22,9 @@ namespace Infrastructure
         public DbSet<Pledge> Pledges { get; set; }
         public DbSet<PledgeDetail> PledgeDetails { get; set; }
         public DbSet<ProjectComment> ProjectComments { get; set; }
+        public DbSet<PostComment> PostComments { get; set; }
         public DbSet<Reward> Rewards { get; set; }
         public DbSet<Report> Reports { get; set; }
-        public DbSet<Transaction> Transactions { get; set; }
         public DbSet<ProjectPlatform> GamePlatforms { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<Post> Posts { get; set; }
@@ -43,6 +42,9 @@ namespace Infrastructure
 
             modelBuilder.Entity<Collaborator>()
                 .HasKey(c => new { c.UserId, c.ProjectId });
+
+            modelBuilder.Entity<PledgeDetail>()
+                .HasKey(c => new { c.PledgeId, c.PaymentId });
 
             modelBuilder.Entity<Comment>()
                 .HasOne(c => c.User)
@@ -63,7 +65,10 @@ namespace Infrastructure
                 .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Pledge>()
-                .HasKey(p => new { p.UserId, p.ProjectId });
+                .HasMany(p => p.PledgeDetails)
+                .WithOne(pd => pd.Pledge)
+                .HasForeignKey(pd => pd.PledgeId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Post>()
                 .HasOne(p => p.User)
@@ -81,12 +86,6 @@ namespace Infrastructure
                 .HasOne(t => t.User)
                 .WithMany(u => u.Tokens)
                 .HasForeignKey(t => t.UserId)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            modelBuilder.Entity<Transaction>()
-                .HasOne(t => t.PaymentLinkInformation)
-                .WithMany(p => p.Transactions)
-                .HasForeignKey(t => t.PaymentLinkInformationId)
                 .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Project>()
@@ -126,17 +125,6 @@ namespace Infrastructure
 
             modelBuilder.Entity<PostComment>()
                 .HasKey(pc => new { pc.CommentId, pc.PostId });
-            modelBuilder.Entity<PaymentLinkInformation>()
-                .HasKey(pli => pli.PaymentLinkInformationId);
-
-            modelBuilder.Entity<PledgeDetail>()
-                .HasKey(pd => new { pd.PledgeId, pd.PaymentLinkInformationId });
-
-            modelBuilder.Entity<PaymentLinkInformation>()
-                .HasOne(pli => pli.User)
-                .WithMany(u => u.PaymentLinkInformations)
-                .HasForeignKey(pli => pli.UserId)
-                .OnDelete(DeleteBehavior.Cascade);
         }
 
     }

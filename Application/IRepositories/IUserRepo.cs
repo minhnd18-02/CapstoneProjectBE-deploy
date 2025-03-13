@@ -12,7 +12,7 @@ namespace Application.IRepositories
         Task<bool> CheckEmailAddressExisted(string sEmail);
         Task<User?> GetByEmailAsync(string sEmail);
         Task<User> GetUserByEmailAddressAndPasswordHash(string email, string passwordHash);
-
+        Task<IEnumerable<User>> GetAllUser();
         int GetCount();
     }
 }

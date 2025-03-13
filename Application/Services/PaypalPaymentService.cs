@@ -25,6 +25,85 @@ namespace Application.Services
             _mapper = mapper;
             _unitOfWork = unitOfWork;
         }
+        public async Task<ServiceResponse<string>> CreateRefundAsync(int userId, int pledgeId)
+        {
+            var response = new ServiceResponse<string>();
+            try
+            {
+                var pledge = await _unitOfWork.PledgeRepo.GetPledgeByIdAsync(pledgeId);
+                if (pledge == null)
+                {
+                    response.Success = false;
+                    response.Message = "Pledge not found.";
+                    return response;
+                }
+
+                var user = await _unitOfWork.UserRepo.GetByIdAsync(userId);
+                if (user == null)
+                {
+                    response.Success = false;
+                    response.Message = "User not found.";
+                    return response;
+                }
+
+                var apiContext = new APIContext(new OAuthTokenCredential(
+                    _configuration["PayPal:ClientId"],
+                    _configuration["PayPal:ClientSecret"]
+                ).GetAccessToken());
+
+                var payout = new Payout
+                {
+                    sender_batch_header = new PayoutSenderBatchHeader
+                    {
+                        sender_batch_id = Guid.NewGuid().ToString(),
+                        email_subject = "You have a refund from your pledge"
+                    },
+                    items = new List<PayoutItem>
+            {
+                new PayoutItem
+                {
+                    recipient_type = PayoutRecipientType.EMAIL,
+                    amount = new Currency
+                    {
+                        value = pledge.Amount.ToString("F2"),
+                        currency = "USD"
+                    },
+                    receiver = user.Email,
+                    note = "Refund for your pledge",
+                    sender_item_id = pledge.PledgeId.ToString()
+                }
+            }
+                };
+
+                var createdPayout = payout.Create(apiContext, true);
+
+                if (createdPayout.batch_header.batch_status != "SUCCESS")
+                {
+                    response.Success = false;
+                    response.Message = "Failed to create payout.";
+                    return response;
+                }
+
+                pledge.Project.TotalAmount -= pledge.Amount;
+                pledge.Amount = 0;
+                await _unitOfWork.PledgeRepo.UpdateAsync(pledge);
+
+                response.Success = true;
+                response.Message = "Payout created successfully.";
+            }
+            catch (PayPalException payPalEx)
+            {
+                response.Success = false;
+                response.Message = $"PayPal error: {payPalEx.Message}";
+            }
+            catch (Exception ex)
+            {
+                response.Success = false;
+                response.Message = $"Failed to create payout: {ex.Message}";
+            }
+            return response;
+        }
+
         public async Task<ServiceResponse<string>> CreatePaymentAsync(int userId, int projectId, decimal amount, string returnUrl, string cancelUrl)
         {
             var response = new ServiceResponse<string>();
@@ -32,7 +111,6 @@ namespace Application.Services
             try
             {
 
-                //var getPledge = await _unitOfWork.PledgeRepo.GetPledgeByUserIdAndProjectIdAsync(userId, projectId);
                 decimal conversionRate = 23000m;
                 decimal totalAmountVND = amount;
                 decimal totalAmountUSD = totalAmountVND / conversionRate;

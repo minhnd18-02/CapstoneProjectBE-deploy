@@ -11,40 +11,56 @@ namespace Infrastructure
     public class UnitOfWork : IUnitOfWork
     {
         private readonly ApiContext _apiContext;
-        private readonly IUserRepo _userRepository;
-        private readonly ITeamRepo _teamRepo;
+        private readonly IUserRepo _userRepo;
         private readonly ITokenRepo _tokenRepo;
         private readonly IProjectRepo _projectRepo;
-        private readonly ICardRepo _cardRepo;
-        private readonly IBoardRepo _boardRepo;
-        private readonly ITeamMemberRepo _teamMemberRepo;
-
-        public UnitOfWork(ApiContext apiContext, IUserRepo userRepository, ITokenRepo tokenRepo, ITeamRepo team, ITeamMemberRepo teamMemberRepo, ICardRepo cardRepo, IBoardRepo boardRepo, IProjectRepo projectRepo)
+        private readonly ICategoryRepo _categoryRepo;
+        private readonly IRewardRepo _rewardRepo;
+        private readonly IGoalRepo _goalRepo;
+        private readonly IPostRepo _postRepo;
+        private readonly ICommentRepo _commentRepo;
+        private readonly IPostCommentRepo _postCommentRepo;
+        private readonly IPledgeRepo _pledgeRepo;
+        private readonly IPledgeDetailRepo _pledgeDetailRepo;
+        private readonly IProjectCommentRepo _projectCommentRepo;
+        public UnitOfWork(ApiContext apiContext, IUserRepo userRepo, ITokenRepo tokenRepo, IProjectRepo projectRepo, IPostRepo postRepo, ICommentRepo commentRepo, IPostCommentRepo postCommentRepo, IProjectCommentRepo projectCommentRepo, IPledgeRepo pledgeRepo, IPledgeDetailRepo pledgeDetailRepo,
+            ICategoryRepo categoryRepo, IRewardRepo rewardRepo, IGoalRepo goalRepo)
         {
             _apiContext = apiContext;
             _tokenRepo = tokenRepo;
-            _userRepository = userRepository;
+            _userRepo = userRepo;
             _projectRepo = projectRepo;
-            _cardRepo = cardRepo;
-            _boardRepo = boardRepo;
-            _teamRepo = team;
-            _teamMemberRepo = teamMemberRepo;
+            _categoryRepo = categoryRepo;
+            _rewardRepo = rewardRepo;
+            _goalRepo = goalRepo;
+            _postRepo = postRepo;
+            _commentRepo = commentRepo;
+            _postCommentRepo = postCommentRepo;
+            _projectCommentRepo = projectCommentRepo;
+            _pledgeRepo = pledgeRepo;
+            _pledgeDetailRepo = pledgeDetailRepo;
         }
 
-        public IUserRepo UserRepository => _userRepository;
+        public IUserRepo UserRepo => _userRepo;
 
         public ITokenRepo TokenRepo => _tokenRepo;
 
+        public IPledgeRepo PledgeRepo => _pledgeRepo;
+
         public IProjectRepo ProjectRepo => _projectRepo;
+        public ICategoryRepo CategoryRepo => _categoryRepo;
+        public IRewardRepo RewardRepo => _rewardRepo;
+        public IGoalRepo GoalRepo => _goalRepo;
 
-        public ICardRepo CardRepo => _cardRepo;
-        
-        public IBoardRepo BoardRepo => _boardRepo;
+        public IPostRepo PostRepo => _postRepo;
 
-        public ITeamRepo TeamRepository => _teamRepo;
+        public ICommentRepo CommentRepo => _commentRepo;
 
-        public ITeamMemberRepo TeamMemberRepo => _teamMemberRepo;
+        public IPostCommentRepo PostCommentRepo => _postCommentRepo;
 
+        public IProjectCommentRepo ProjectCommentRepo => _projectCommentRepo;
+
+        public IPledgeDetailRepo PledgeDetailRepo => _pledgeDetailRepo;
         public async Task<int> SaveChangeAsync()
         {
             try

@@ -22,101 +22,6 @@ namespace Domain.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("Domain.Entities.Assignation", b =>
-                {
-                    b.Property<int>("CardId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("CardId", "UserId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Assignations");
-                });
-
-            modelBuilder.Entity("Domain.Entities.Board", b =>
-                {
-                    b.Property<int>("BoardId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("BoardId"));
-
-                    b.Property<DateTime>("CreatedDatetime")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Label")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int>("ProjectId")
-                        .HasColumnType("integer");
-
-                    b.Property<bool>("Status")
-                        .HasColumnType("boolean");
-
-                    b.HasKey("BoardId");
-
-                    b.ToTable("Boards");
-                });
-
-            modelBuilder.Entity("Domain.Entities.Card", b =>
-                {
-                    b.Property<int>("CardId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("CardId"));
-
-                    b.Property<int>("BoardId")
-                        .HasColumnType("integer");
-
-                    b.Property<DateTime>("CreatedDatetime")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<DateTime?>("Deadline")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<bool>("Status")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("boolean")
-                        .HasDefaultValue(true);
-
-                    b.HasKey("CardId");
-
-                    b.HasIndex("BoardId");
-
-                    b.ToTable("Cards");
-                });
-
-            modelBuilder.Entity("Domain.Entities.CardAttachment", b =>
-                {
-                    b.Property<int>("CardId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("FileId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("CardId", "FileId");
-
-                    b.HasIndex("FileId");
-
-                    b.ToTable("CardAttachments");
-                });
-
             modelBuilder.Entity("Domain.Entities.Category", b =>
                 {
                     b.Property<int>("CategoryId")
@@ -132,9 +37,66 @@ namespace Domain.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<int>("ParentCategoryId")
+                        .HasColumnType("integer");
+
                     b.HasKey("CategoryId");
 
-                    b.ToTable("Category");
+                    b.HasIndex("ParentCategoryId");
+
+                    b.ToTable("Categories");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Collaborator", b =>
+                {
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("ProjectId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("UserId", "ProjectId");
+
+                    b.HasIndex("ProjectId");
+
+                    b.ToTable("Collaborators");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Comment", b =>
+                {
+                    b.Property<int>("CommentId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("CommentId"));
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedDatetime")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int?>("ParentCommentId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("UpdatedDatetime")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("CommentId");
+
+                    b.HasIndex("ParentCommentId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Comments");
                 });
 
             modelBuilder.Entity("Domain.Entities.File", b =>
@@ -152,8 +114,9 @@ namespace Domain.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<bool>("Status")
-                        .HasColumnType("boolean");
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<int>("UserId")
                         .HasColumnType("integer");
@@ -162,102 +125,20 @@ namespace Domain.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("File");
+                    b.ToTable("Files");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Game", b =>
+            modelBuilder.Entity("Domain.Entities.Goal", b =>
                 {
-                    b.Property<int>("GameId")
-                        .ValueGeneratedOnAdd()
+                    b.Property<int>("ProjectId")
                         .HasColumnType("integer");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("GameId"));
-
-                    b.Property<string>("Details")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<decimal>("Price")
+                    b.Property<decimal>("Amount")
                         .HasColumnType("numeric");
 
-                    b.Property<DateTime>("PublishDatetime")
-                        .HasColumnType("timestamp with time zone");
+                    b.HasKey("ProjectId", "Amount");
 
-                    b.HasKey("GameId");
-
-                    b.ToTable("Games");
-                });
-
-            modelBuilder.Entity("Domain.Entities.GameCategory", b =>
-                {
-                    b.Property<int>("CategoryId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("GameId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("CategoryId", "GameId");
-
-                    b.HasIndex("GameId");
-
-                    b.ToTable("GameCategories");
-                });
-
-            modelBuilder.Entity("Domain.Entities.GamePlatform", b =>
-                {
-                    b.Property<int>("GameId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("PlatformId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("GameId", "PlatformId");
-
-                    b.HasIndex("PlatformId");
-
-                    b.ToTable("GamePlatforms");
-                });
-
-            modelBuilder.Entity("Domain.Entities.PaymentLinkInformation", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("text");
-
-                    b.Property<int>("Amount")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("AmountPaid")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("AmountRemaining")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("CancelAt")
-                        .HasColumnType("text");
-
-                    b.Property<string>("CancellationReason")
-                        .HasColumnType("text");
-
-                    b.Property<string>("CreateAt")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<long>("OrderCode")
-                        .HasColumnType("bigint");
-
-                    b.Property<int>("PaymentLinkInformationId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("PaymentLinkInformation");
+                    b.ToTable("Goals");
                 });
 
             modelBuilder.Entity("Domain.Entities.Platform", b =>
@@ -280,6 +161,49 @@ namespace Domain.Migrations
                     b.ToTable("Platforms");
                 });
 
+            modelBuilder.Entity("Domain.Entities.Pledge", b =>
+                {
+                    b.Property<int>("PledgeId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("PledgeId"));
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("numeric");
+
+                    b.Property<int>("ProjectId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("PledgeId");
+
+                    b.HasIndex("ProjectId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Pledges");
+                });
+
+            modelBuilder.Entity("Domain.Entities.PledgeDetail", b =>
+                {
+                    b.Property<int>("PledgeId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("PaymentId")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("PledgeId", "PaymentId");
+
+                    b.ToTable("PledgeDetails");
+                });
+
             modelBuilder.Entity("Domain.Entities.Post", b =>
                 {
                     b.Property<int>("PostId")
@@ -291,11 +215,20 @@ namespace Domain.Migrations
                     b.Property<DateTime>("CreatedDatetime")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("Details")
+                    b.Property<string>("Description")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<int>("ProjectId")
                         .HasColumnType("integer");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<int>("UserId")
                         .HasColumnType("integer");
@@ -309,19 +242,22 @@ namespace Domain.Migrations
                     b.ToTable("Posts");
                 });
 
-            modelBuilder.Entity("Domain.Entities.PostAttachment", b =>
+            modelBuilder.Entity("Domain.Entities.PostComment", b =>
                 {
+                    b.Property<int>("CommentId")
+                        .HasColumnType("integer");
+
                     b.Property<int>("PostId")
                         .HasColumnType("integer");
 
-                    b.Property<int>("FileId")
-                        .HasColumnType("integer");
+                    b.HasKey("CommentId", "PostId");
 
-                    b.HasKey("PostId", "FileId");
+                    b.HasIndex("CommentId")
+                        .IsUnique();
 
-                    b.HasIndex("FileId");
+                    b.HasIndex("PostId");
 
-                    b.ToTable("PostAttachment");
+                    b.ToTable("PostComments");
                 });
 
             modelBuilder.Entity("Domain.Entities.Project", b =>
@@ -332,65 +268,140 @@ namespace Domain.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("ProjectId"));
 
+                    b.Property<int>("CreatorId")
+                        .HasColumnType("integer");
+
                     b.Property<string>("Description")
                         .HasColumnType("text");
 
                     b.Property<DateTime>("EndDatetime")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<decimal>("MinmumAmount")
+                        .HasColumnType("numeric");
 
                     b.Property<DateTime>("StartDatetime")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<bool>("Status")
-                        .HasColumnType("boolean");
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("text");
 
-                    b.Property<int>("TeamId")
-                        .HasColumnType("integer");
+                    b.Property<string>("Title")
+                        .HasColumnType("text");
+
+                    b.Property<decimal>("TotalAmount")
+                        .HasColumnType("numeric");
+
+                    b.Property<DateTime>("UpdateDatetime")
+                        .HasColumnType("timestamp with time zone");
 
                     b.HasKey("ProjectId");
 
-                    b.HasIndex("TeamId");
+                    b.HasIndex("CreatorId");
 
                     b.ToTable("Projects");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Team", b =>
+            modelBuilder.Entity("Domain.Entities.ProjectCategory", b =>
                 {
-                    b.Property<int>("TeamId")
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("ProjectId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("CategoryId", "ProjectId");
+
+                    b.HasIndex("ProjectId");
+
+                    b.ToTable("ProjectCategories");
+                });
+
+            modelBuilder.Entity("Domain.Entities.ProjectComment", b =>
+                {
+                    b.Property<int>("CommentId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("ProjectId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("CommentId", "ProjectId");
+
+                    b.HasIndex("CommentId")
+                        .IsUnique();
+
+                    b.HasIndex("ProjectId");
+
+                    b.ToTable("ProjectComments");
+                });
+
+            modelBuilder.Entity("Domain.Entities.ProjectPlatform", b =>
+                {
+                    b.Property<int>("PlatformId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("ProjectId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("PlatformId", "ProjectId");
+
+                    b.HasIndex("ProjectId");
+
+                    b.ToTable("GamePlatforms");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Report", b =>
+                {
+                    b.Property<int>("ReportId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("TeamId"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("ReportId"));
 
-                    b.Property<string>("Name")
+                    b.Property<DateTime>("CreateDatetime")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Detail")
                         .IsRequired()
                         .HasColumnType("text");
-
-                    b.HasKey("TeamId");
-
-                    b.ToTable("Teams");
-                });
-
-            modelBuilder.Entity("Domain.Entities.TeamMember", b =>
-                {
-                    b.Property<int>("TeamId")
-                        .HasColumnType("integer");
 
                     b.Property<int>("UserId")
                         .HasColumnType("integer");
 
-                    b.Property<string>("Role")
-                        .HasColumnType("text");
-
-                    b.HasKey("TeamId", "UserId");
+                    b.HasKey("ReportId");
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("TeamMembers");
+                    b.ToTable("Reports");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Reward", b =>
+                {
+                    b.Property<int>("RewardId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("RewardId"));
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("numeric");
+
+                    b.Property<DateTime>("CreatedDatetime")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Details")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("ProjectId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("RewardId");
+
+                    b.HasIndex("ProjectId");
+
+                    b.ToTable("Rewards");
                 });
 
             modelBuilder.Entity("Domain.Entities.Token", b =>
@@ -425,65 +436,6 @@ namespace Domain.Migrations
                     b.ToTable("Tokens");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Transaction", b =>
-                {
-                    b.Property<int>("TransactionId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("TransactionId"));
-
-                    b.Property<string>("AccountNumber")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int>("Amount")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("CounterAccountBankId")
-                        .HasColumnType("text");
-
-                    b.Property<string>("CounterAccountBankName")
-                        .HasColumnType("text");
-
-                    b.Property<string>("CounterAccountName")
-                        .HasColumnType("text");
-
-                    b.Property<string>("CounterAccountNumber")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int>("PaymentLinkInformationId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("PaymentLinkInformationId1")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Reference")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("TransactionDateTime")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("VirtualAccountName")
-                        .HasColumnType("text");
-
-                    b.Property<string>("VirtualAccountNumber")
-                        .HasColumnType("text");
-
-                    b.HasKey("TransactionId");
-
-                    b.HasIndex("PaymentLinkInformationId1");
-
-                    b.ToTable("Transactions");
-                });
-
             modelBuilder.Entity("Domain.Entities.User", b =>
                 {
                     b.Property<int>("UserId")
@@ -492,10 +444,21 @@ namespace Domain.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("UserId"));
 
+                    b.Property<string>("Avatar")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Bio")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<DateTime>("CreatedDatetime")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Fullname")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -506,113 +469,121 @@ namespace Domain.Migrations
                     b.Property<string>("Phone")
                         .HasColumnType("text");
 
+                    b.Property<string>("Role")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.HasKey("UserId");
 
-                    b.HasIndex("Email")
+                    b.HasIndex("UserId")
                         .IsUnique();
 
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Assignation", b =>
+            modelBuilder.Entity("Domain.Entities.Category", b =>
                 {
-                    b.HasOne("Domain.Entities.Card", "Card")
-                        .WithMany("Assignations")
-                        .HasForeignKey("CardId")
+                    b.HasOne("Domain.Entities.Category", "ParentCategory")
+                        .WithMany("Categories")
+                        .HasForeignKey("ParentCategoryId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("ParentCategory");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Collaborator", b =>
+                {
+                    b.HasOne("Domain.Entities.Project", "Project")
+                        .WithMany("Collaborators")
+                        .HasForeignKey("ProjectId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Domain.Entities.User", "User")
-                        .WithMany("Assignations")
+                        .WithMany("Collaborators")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Card");
+                    b.Navigation("Project");
 
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Card", b =>
+            modelBuilder.Entity("Domain.Entities.Comment", b =>
                 {
-                    b.HasOne("Domain.Entities.Board", "Board")
-                        .WithMany("Cards")
-                        .HasForeignKey("BoardId")
+                    b.HasOne("Domain.Entities.Comment", "ParentComment")
+                        .WithMany("Comments")
+                        .HasForeignKey("ParentCommentId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("Domain.Entities.User", "User")
+                        .WithMany("Comments")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Board");
-                });
+                    b.Navigation("ParentComment");
 
-            modelBuilder.Entity("Domain.Entities.CardAttachment", b =>
-                {
-                    b.HasOne("Domain.Entities.Card", "Card")
-                        .WithMany("CardAttachments")
-                        .HasForeignKey("CardId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Domain.Entities.File", "File")
-                        .WithMany("CardAttachments")
-                        .HasForeignKey("FileId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Card");
-
-                    b.Navigation("File");
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Domain.Entities.File", b =>
                 {
-                    b.HasOne("Domain.Entities.User", null)
+                    b.HasOne("Domain.Entities.User", "User")
                         .WithMany("Files")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Domain.Entities.GameCategory", b =>
+            modelBuilder.Entity("Domain.Entities.Goal", b =>
                 {
-                    b.HasOne("Domain.Entities.Category", "Category")
-                        .WithMany("GameCategories")
-                        .HasForeignKey("CategoryId")
+                    b.HasOne("Domain.Entities.Project", "Project")
+                        .WithMany("Goals")
+                        .HasForeignKey("ProjectId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Domain.Entities.Game", "Game")
-                        .WithMany("GameCategories")
-                        .HasForeignKey("GameId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Category");
-
-                    b.Navigation("Game");
+                    b.Navigation("Project");
                 });
 
-            modelBuilder.Entity("Domain.Entities.GamePlatform", b =>
+            modelBuilder.Entity("Domain.Entities.Pledge", b =>
                 {
-                    b.HasOne("Domain.Entities.Game", "Game")
-                        .WithMany("GamePlatforms")
-                        .HasForeignKey("GameId")
+                    b.HasOne("Domain.Entities.Project", "Project")
+                        .WithMany("Pledges")
+                        .HasForeignKey("ProjectId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Domain.Entities.Platform", "Platform")
-                        .WithMany("GamePlatforms")
-                        .HasForeignKey("PlatformId")
+                    b.HasOne("Domain.Entities.User", "User")
+                        .WithMany("Pledges")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Game");
+                    b.Navigation("Project");
 
-                    b.Navigation("Platform");
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Domain.Entities.PledgeDetail", b =>
+                {
+                    b.HasOne("Domain.Entities.Pledge", "Pledge")
+                        .WithMany("PledgeDetails")
+                        .HasForeignKey("PledgeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Pledge");
                 });
 
             modelBuilder.Entity("Domain.Entities.Post", b =>
                 {
-                    b.HasOne("Domain.Entities.Project", "Project")
+                    b.HasOne("Domain.Entities.Project", null)
                         .WithMany("Posts")
                         .HasForeignKey("ProjectId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -624,58 +595,116 @@ namespace Domain.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Project");
-
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Domain.Entities.PostAttachment", b =>
+            modelBuilder.Entity("Domain.Entities.PostComment", b =>
                 {
-                    b.HasOne("Domain.Entities.File", "File")
-                        .WithMany("PostAttachments")
-                        .HasForeignKey("FileId")
+                    b.HasOne("Domain.Entities.Comment", "Comment")
+                        .WithOne("PostComment")
+                        .HasForeignKey("Domain.Entities.PostComment", "CommentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Domain.Entities.Post", "Post")
-                        .WithMany("PostAttachments")
+                        .WithMany("PostComments")
                         .HasForeignKey("PostId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("File");
+                    b.Navigation("Comment");
 
                     b.Navigation("Post");
                 });
 
             modelBuilder.Entity("Domain.Entities.Project", b =>
                 {
-                    b.HasOne("Domain.Entities.Team", "Team")
+                    b.HasOne("Domain.Entities.User", "User")
                         .WithMany("Projects")
-                        .HasForeignKey("TeamId")
+                        .HasForeignKey("CreatorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Team");
+                    b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Domain.Entities.TeamMember", b =>
+            modelBuilder.Entity("Domain.Entities.ProjectCategory", b =>
                 {
-                    b.HasOne("Domain.Entities.Team", "Team")
-                        .WithMany("TeamMembers")
-                        .HasForeignKey("TeamId")
+                    b.HasOne("Domain.Entities.Category", "Category")
+                        .WithMany("ProjectCategories")
+                        .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Domain.Entities.Project", "Project")
+                        .WithMany("ProjectCategories")
+                        .HasForeignKey("ProjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Category");
+
+                    b.Navigation("Project");
+                });
+
+            modelBuilder.Entity("Domain.Entities.ProjectComment", b =>
+                {
+                    b.HasOne("Domain.Entities.Comment", "Comment")
+                        .WithOne("ProjectComment")
+                        .HasForeignKey("Domain.Entities.ProjectComment", "CommentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entities.Project", "Project")
+                        .WithMany("ProjectComments")
+                        .HasForeignKey("ProjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Comment");
+
+                    b.Navigation("Project");
+                });
+
+            modelBuilder.Entity("Domain.Entities.ProjectPlatform", b =>
+                {
+                    b.HasOne("Domain.Entities.Platform", "Platform")
+                        .WithMany("GamePlatforms")
+                        .HasForeignKey("PlatformId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entities.Project", "Project")
+                        .WithMany("ProjectPlatforms")
+                        .HasForeignKey("ProjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Platform");
+
+                    b.Navigation("Project");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Report", b =>
+                {
                     b.HasOne("Domain.Entities.User", "User")
-                        .WithMany("TeamMembers")
+                        .WithMany("Reports")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Team");
-
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Reward", b =>
+                {
+                    b.HasOne("Domain.Entities.Project", "Project")
+                        .WithMany("Rewards")
+                        .HasForeignKey("ProjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Project");
                 });
 
             modelBuilder.Entity("Domain.Entities.Token", b =>
@@ -689,51 +718,20 @@ namespace Domain.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Transaction", b =>
-                {
-                    b.HasOne("Domain.Entities.PaymentLinkInformation", "PaymentLinkInformation")
-                        .WithMany("Transactions")
-                        .HasForeignKey("PaymentLinkInformationId1")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("PaymentLinkInformation");
-                });
-
-            modelBuilder.Entity("Domain.Entities.Board", b =>
-                {
-                    b.Navigation("Cards");
-                });
-
-            modelBuilder.Entity("Domain.Entities.Card", b =>
-                {
-                    b.Navigation("Assignations");
-
-                    b.Navigation("CardAttachments");
-                });
-
             modelBuilder.Entity("Domain.Entities.Category", b =>
                 {
-                    b.Navigation("GameCategories");
+                    b.Navigation("Categories");
+
+                    b.Navigation("ProjectCategories");
                 });
 
-            modelBuilder.Entity("Domain.Entities.File", b =>
+            modelBuilder.Entity("Domain.Entities.Comment", b =>
                 {
-                    b.Navigation("CardAttachments");
+                    b.Navigation("Comments");
 
-                    b.Navigation("PostAttachments");
-                });
+                    b.Navigation("PostComment");
 
-            modelBuilder.Entity("Domain.Entities.Game", b =>
-                {
-                    b.Navigation("GameCategories");
-
-                    b.Navigation("GamePlatforms");
-                });
-
-            modelBuilder.Entity("Domain.Entities.PaymentLinkInformation", b =>
-                {
-                    b.Navigation("Transactions");
+                    b.Navigation("ProjectComment");
                 });
 
             modelBuilder.Entity("Domain.Entities.Platform", b =>
@@ -741,32 +739,50 @@ namespace Domain.Migrations
                     b.Navigation("GamePlatforms");
                 });
 
+            modelBuilder.Entity("Domain.Entities.Pledge", b =>
+                {
+                    b.Navigation("PledgeDetails");
+                });
+
             modelBuilder.Entity("Domain.Entities.Post", b =>
                 {
-                    b.Navigation("PostAttachments");
+                    b.Navigation("PostComments");
                 });
 
             modelBuilder.Entity("Domain.Entities.Project", b =>
                 {
+                    b.Navigation("Collaborators");
+
+                    b.Navigation("Goals");
+
+                    b.Navigation("Pledges");
+
                     b.Navigation("Posts");
-                });
 
-            modelBuilder.Entity("Domain.Entities.Team", b =>
-                {
-                    b.Navigation("Projects");
+                    b.Navigation("ProjectCategories");
 
-                    b.Navigation("TeamMembers");
+                    b.Navigation("ProjectComments");
+
+                    b.Navigation("ProjectPlatforms");
+
+                    b.Navigation("Rewards");
                 });
 
             modelBuilder.Entity("Domain.Entities.User", b =>
                 {
-                    b.Navigation("Assignations");
+                    b.Navigation("Collaborators");
+
+                    b.Navigation("Comments");
 
                     b.Navigation("Files");
 
+                    b.Navigation("Pledges");
+
                     b.Navigation("Posts");
 
-                    b.Navigation("TeamMembers");
+                    b.Navigation("Projects");
+
+                    b.Navigation("Reports");
 
                     b.Navigation("Tokens");
                 });

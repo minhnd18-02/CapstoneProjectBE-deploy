@@ -9,13 +9,18 @@ namespace Application
 {
     public interface IUnitOfWork
     {
-        public IUserRepo UserRepository { get; }
+        public IUserRepo UserRepo { get; }
+        public IPledgeRepo PledgeRepo { get; }
         public ITokenRepo TokenRepo { get; }
         public IProjectRepo ProjectRepo { get; }
-        public ICardRepo CardRepo { get; }
-        public IBoardRepo BoardRepo { get; }
-        public ITeamRepo TeamRepository { get; }
-        public ITeamMemberRepo TeamMemberRepo { get; }
+        public ICategoryRepo CategoryRepo { get; }
+        public IRewardRepo RewardRepo { get; }
+        public IGoalRepo GoalRepo { get; }
+        public IPostRepo PostRepo { get; }
+        public ICommentRepo CommentRepo { get; }
+        public IPostCommentRepo PostCommentRepo { get; }
+        public IProjectCommentRepo ProjectCommentRepo { get; }
+        public IPledgeDetailRepo PledgeDetailRepo { get; }
         public Task<int> SaveChangeAsync();
     }
 }

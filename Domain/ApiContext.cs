@@ -13,20 +13,22 @@ namespace Infrastructure
         public ApiContext(DbContextOptions<ApiContext> options) : base(options)
         { }
 
-        public DbSet<Assignation> Assignations { get; set; }
-        public DbSet<PaymentLinkInformation> PaymentLinkInformation { get; set; }
-        public DbSet<Transaction> Transactions { get; set; }
-        public DbSet<Team> Teams { get; set; }
-        public DbSet<TeamMember> TeamMembers { get; set; }
-        public DbSet<GamePlatform> GamePlatforms { get; set; }
-        public DbSet<Card> Cards { get; set; }
-        public DbSet<Board> Boards { get; set; }
+        public DbSet<ProjectCategory> ProjectCategories { get; set; }
+        public DbSet<Category> Categories { get; set; }
+        public DbSet<Collaborator> Collaborators { get; set; }
+        public DbSet<Comment> Comments { get; set; }
+        public DbSet<Domain.Entities.File> Files { get; set; }
+        public DbSet<Goal> Goals { get; set; }
+        public DbSet<Pledge> Pledges { get; set; }
+        public DbSet<PledgeDetail> PledgeDetails { get; set; }
+        public DbSet<ProjectComment> ProjectComments { get; set; }
+        public DbSet<PostComment> PostComments { get; set; }
+        public DbSet<Reward> Rewards { get; set; }
+        public DbSet<Report> Reports { get; set; }
+        public DbSet<ProjectPlatform> GamePlatforms { get; set; }
         public DbSet<User> Users { get; set; }
-        public DbSet<CardAttachment> CardAttachments { get; set; }
         public DbSet<Post> Posts { get; set; }
-        public DbSet<Game> Games { get; set; }
         public DbSet<Platform> Platforms { get; set; }
-        public DbSet<GameCategory> GameCategories { get; set; }
         public DbSet<Token> Tokens { get; set; }
         public DbSet<Project> Projects { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -35,30 +37,95 @@ namespace Infrastructure
 
             // Configure relationships and constraints here if needed
             modelBuilder.Entity<User>()
-                .HasIndex(u => u.Email)
+                .HasIndex(u => u.UserId)
                 .IsUnique();
 
-            modelBuilder.Entity<Card>()
-                .Property(c => c.Status)
-                .HasDefaultValue(true);
+            modelBuilder.Entity<Collaborator>()
+                .HasKey(c => new { c.UserId, c.ProjectId });
 
-            modelBuilder.Entity<Assignation>()
-                .HasKey(a => new { a.CardId, a.UserId });
+            modelBuilder.Entity<PledgeDetail>()
+                .HasKey(c => new { c.PledgeId, c.PaymentId });
 
-            modelBuilder.Entity<TeamMember>()
-                .HasKey(tm => new { tm.TeamId, tm.UserId });
+            modelBuilder.Entity<Comment>()
+                .HasOne(c => c.User)
+                .WithMany(u => u.Comments)
+                .HasForeignKey(c => c.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
 
-            modelBuilder.Entity<GamePlatform>()
-                .HasKey(gp => new { gp.GameId, gp.PlatformId });
+            modelBuilder.Entity<Comment>()
+                .HasOne(c => c.ParentComment)
+                .WithMany(c => c.Comments)
+                .HasForeignKey(c => c.ParentCommentId)
+                .OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<CardAttachment>()
-                .HasKey(gp => new { gp.CardId, gp.FileId });
+            modelBuilder.Entity<Domain.Entities.File>()
+                .HasOne(f => f.User)
+                .WithMany(u => u.Files)
+                .HasForeignKey(f => f.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
 
-            modelBuilder.Entity<GameCategory>()
-                .HasKey(gp => new { gp.CategoryId, gp.GameId });
+            modelBuilder.Entity<Pledge>()
+                .HasMany(p => p.PledgeDetails)
+                .WithOne(pd => pd.Pledge)
+                .HasForeignKey(pd => pd.PledgeId)
+                .OnDelete(DeleteBehavior.Cascade);
 
-            modelBuilder.Entity<PostAttachment>()
-                .HasKey(gp => new { gp.PostId, gp.FileId });
+            modelBuilder.Entity<Post>()
+                .HasOne(p => p.User)
+                .WithMany(u => u.Posts)
+                .HasForeignKey(p => p.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Report>()
+                .HasOne(r => r.User)
+                .WithMany(u => u.Reports)
+                .HasForeignKey(r => r.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Token>()
+                .HasOne(t => t.User)
+                .WithMany(u => u.Tokens)
+                .HasForeignKey(t => t.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Project>()
+                .HasOne(p => p.User)
+                .WithMany(u => u.Projects)
+                .HasForeignKey(p => p.CreatorId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Category>()
+                .HasOne(c => c.ParentCategory)
+                .WithMany(c => c.Categories)
+                .HasForeignKey(c => c.ParentCategoryId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Goal>()
+                .HasKey(g => new { g.ProjectId, g.Amount });
+            modelBuilder.Entity<Goal>()
+                .HasOne(g => g.Project)
+                .WithMany(p => p.Goals)
+                .HasForeignKey(g => g.ProjectId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<ProjectCategory>()
+                .HasKey(pc => new { pc.CategoryId, pc.ProjectId });
+
+            modelBuilder.Entity<ProjectComment>()
+                .HasKey(pc => new { pc.CommentId, pc.ProjectId });
+
+            modelBuilder.Entity<ProjectPlatform>()
+                .HasKey(pp => new { pp.PlatformId, pp.ProjectId });
+
+            modelBuilder.Entity<Reward>()
+                .HasOne(r => r.Project)
+                .WithMany(p => p.Rewards)
+                .HasForeignKey(r => r.ProjectId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<PostComment>()
+                .HasKey(pc => new { pc.CommentId, pc.PostId });
         }
+
     }
 }

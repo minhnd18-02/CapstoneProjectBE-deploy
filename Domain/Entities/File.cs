@@ -9,12 +9,10 @@ namespace Domain.Entities
     public class File
     {
         public int FileId { get; set; }
-        public bool Status { get; set; }
+        public string Status { get; set; } = string.Empty;
         public string Source { get; set; } = string.Empty;
         public int UserId { get; set; }
         public DateTime CreatedDatetime { get; set; }
-        public virtual ICollection<PostAttachment> PostAttachments { get; set; } = new List<PostAttachment>();
-        public virtual ICollection<CardAttachment> CardAttachments { get; set; } = new List<CardAttachment>();
-
+        public virtual User User { get; set; } = null!;
     }
 }

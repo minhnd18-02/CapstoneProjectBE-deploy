@@ -75,33 +75,25 @@ namespace CapstonProjectBE.Controllers
                 );
             }
         }
-
-        [HttpPost("loginByGoogle")]
-        [AllowAnonymous]
-        public async Task LoginByGoogle()
+        /// <summary>
+        /// Resends the confirmation token to the specified email address.
+        /// </summary>
+        /// <param name="sEmail">The email address to which the confirmation token will be resent.</param>
+        /// <returns>A response indicating success or failure of the resend action.</returns>
+        [HttpPost("resend")]
+        //[Authorize(Roles = "Customer")]
+        public async Task<IActionResult> ReSendConfirm(string sEmail)
         {
-            var properties = new AuthenticationProperties { RedirectUri = Url.Action("GoogleResponse") };
-            await HttpContext.ChallengeAsync(GoogleDefaults.AuthenticationScheme, properties);
-        }
+            var result = await _authenService.ResendConfirmationTokenAsync(sEmail);
 
-        [HttpGet("GoogleResponse")]
-        [AllowAnonymous]
-        public async Task<IActionResult> GoogleResponse()
-        {
-            var authenticateResult = await HttpContext.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-
-            if (!authenticateResult.Succeeded)
-                return BadRequest("Error authenticating");
-
-            var claims = authenticateResult.Principal.Identities.FirstOrDefault()?.Claims.Select(claim => new
+            if (!result.Success)
             {
-                claim.Issuer,
-                claim.OriginalIssuer,
-                claim.Type,
-                claim.Value
-            });
-
-            return Ok(claims);
+                return StatusCode(401, result);
+            }
+            else
+            {
+                return Ok(result);
+            }
         }
     }
 }

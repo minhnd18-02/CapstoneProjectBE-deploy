@@ -3,6 +3,8 @@ using Application.Commons;
 using Infrastructure;
 using Infrastructure.Mappers;
 using Microsoft.EntityFrameworkCore;
+using CapstonProjectBE.Middlewares;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.OpenApi.Models;
@@ -18,6 +20,9 @@ using System;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
+using System.Runtime.InteropServices;
+using Application.ViewModels;
+using Microsoft.AspNetCore.Builder;
 
 namespace CapstonProjectBE
 {
@@ -33,49 +38,18 @@ namespace CapstonProjectBE
             var myConfig = new AppConfiguration();
             configuration.Bind(myConfig);
 
-            builder.Services.AddAuthentication(options =>
-            {
-                options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            })
-            .AddCookie()
-            .AddJwtBearer(options =>
-            {
-                options.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuer = true,
-                    ValidateAudience = true,
-                    ValidateLifetime = true,
-                    ValidateIssuerSigningKey = true,
-                    ValidIssuer = configuration["JWTSection:Issuer"],
-                    ValidAudience = configuration["JWTSection:Audience"],
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JWTSection:SecretKey"]))
-                };
-                options.Events = new JwtBearerEvents
-                {
-                    OnAuthenticationFailed = context =>
-                    {
-                        var exception = context.Exception;
-                        Console.WriteLine("Token validation failed: " + exception.Message);
-                        return Task.CompletedTask;
-                    }
-                };
-            })
-            .AddGoogle(GoogleDefaults.AuthenticationScheme, options =>
-            {
-                options.ClientId = configuration["GoogleKeys:ClientId"];
-                options.ClientSecret = configuration["GoogleKeys:ClientSecret"];
-            });
-
-            builder.Services.AddControllers();
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-            builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
-
             builder.Services.AddDbContext<ApiContext>(options =>
             {
                 options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
+            });
+            builder.Services.Configure<Cloud>(configuration.GetSection("Cloudinary"));
+            builder.Services.AddSingleton(provider =>
+            {
+                var config = provider.GetRequiredService<IOptions<Cloud>>().Value;
+                return new Cloudinary(new Account(
+                    config.CloudName,
+                    config.ApiKey,
+                    config.ApiSecret));
             });
             builder.Services.AddSingleton(myConfig);
             builder.Services.AddInfrastructuresService();
@@ -88,6 +62,7 @@ namespace CapstonProjectBE
 
             var mapper = mapperConfiguration.CreateMapper();
             builder.Services.AddSingleton(mapper);
+
             builder.Services.AddControllers()
                 .AddJsonOptions(options =>
                 {
@@ -111,12 +86,41 @@ namespace CapstonProjectBE
                 options.AddPolicy("Customer", policy => policy.RequireRole("Customer"));
             });
             builder.Services.AddDistributedMemoryCache();
-            builder.Services.AddInfrastructuresService();
+
             builder.Services.AddSession(options =>
             {
                 options.IdleTimeout = TimeSpan.FromMinutes(30); // Session timeout
                 options.Cookie.HttpOnly = true;
                 options.Cookie.IsEssential = true;
+            });
+            builder.Services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(options =>
+            {
+                IConfiguration config = builder.Configuration; // Correct way to access the configuration
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+
+                    ValidIssuer = config["JWTSection:Issuer"],
+                    ValidAudience = config["JWTSection:Audience"],
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["JWTSection:SecretKey"]))
+                };
+                options.Events = new JwtBearerEvents
+                {
+                    OnAuthenticationFailed = context =>
+                    {
+                        var exception = context.Exception;
+                        Console.WriteLine("Token validation failed: " + exception.Message);
+                        return Task.CompletedTask;
+                    }
+                };
             });
 
             builder.Services.AddSwaggerGen(c =>
@@ -156,31 +160,38 @@ namespace CapstonProjectBE
                 });
             });
 
-            var app = builder.Build();
+            //var app = builder.Build();
+            //app.UseDeveloperExceptionPage();
 
-            //// Configure the HTTP request pipeline.
             //if (app.Environment.IsDevelopment())
             //{
-            app.UseSwagger();
-            app.UseSwaggerUI();
+            //    app.UseSwagger();
+            //    app.UseSwaggerUI();
             //}
+            //app.UseSwagger();
+            //app.UseSwaggerUI(c =>
+            //{
+            //    c.SwaggerEndpoint("swagger/v1/swagger.json", "GameMkt v1");
+            //    c.RoutePrefix = string.Empty;
+            //});
 
             #region
-            //var port = Environment.GetEnvironmentVariable("PORT") ?? "8081";
-            //builder.WebHost.UseUrls($"http://*:{port}");
+            var port = Environment.GetEnvironmentVariable("PORT") ?? "8081";
+            builder.WebHost.UseUrls($"http://*:{port}");
 
-            //var app = builder.Build();
+            var app = builder.Build();
 
-            ////Get swagger.json following root directory 
-            //app.UseSwagger(options => { options.RouteTemplate = "{documentName}/swagger.json"; });
-            ////Load swagger.json following root directory 
-            //app.UseSwaggerUI(c => { c.SwaggerEndpoint("/v1/swagger.json", "GameMkt.API V1"); c.RoutePrefix = string.Empty; });
+            //Get swagger.json following root directory 
+            app.UseSwagger(options => { options.RouteTemplate = "{documentName}/swagger.json"; });
+            //Load swagger.json following root directory 
+            app.UseSwaggerUI(c => { c.SwaggerEndpoint("/v1/swagger.json", "GameMkt v1"); c.RoutePrefix = string.Empty; });
             #endregion
-            app.UseHttpsRedirection();
 
+            //app.UseHttpsRedirection();
+            app.UseCors("AllowAll");
             app.UseAuthentication();
             app.UseAuthorization();
-
+            app.UseMiddleware<ConfirmationTokenMiddleware>();
             app.MapControllers();
 
             app.Run();

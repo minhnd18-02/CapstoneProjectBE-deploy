@@ -1,5 +1,7 @@
 ﻿using Application.ViewModels.CategoryDTO;
+using Application.ViewModels.GoalDTO;
 using Application.ViewModels.ProjectDTO;
+using Application.ViewModels.RewardDTO;
 using Application.ViewModels.UserDTO;
 using AutoMapper;
 using Domain.Entities;
@@ -20,6 +22,8 @@ namespace Infrastructure.Mappers
             CreateMap<Project, CreateProjectDto>().ReverseMap();
             CreateMap<Project, UpdateProjectDto>().ReverseMap();
             CreateMap<Category, AddCategory>().ReverseMap();
+            CreateMap<Reward, AddReward>().ReverseMap();
+            CreateMap<Goal, CreateGoal>().ReverseMap();
         }
     }
 }

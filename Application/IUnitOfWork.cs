@@ -13,6 +13,8 @@ namespace Application
         public ITokenRepo TokenRepo { get; }
         public IProjectRepo ProjectRepo { get; }
         public ICategoryRepo CategoryRepo { get; }
+        public IRewardRepo RewardRepo { get; }
+        public IGoalRepo GoalRepo { get; }
         public Task<int> SaveChangeAsync();
     }
 }

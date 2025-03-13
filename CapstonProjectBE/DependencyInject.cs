@@ -16,6 +16,8 @@ namespace CapstonProjectBE
             services.AddScoped<IAuthenService, AuthenService>();
             services.AddScoped<IProjectService, ProjectService>();
             services.AddScoped<ICategoryService, CategoryService>();
+            services.AddScoped<IRewardService, RewardService>();
+            services.AddScoped<IGoalService, GoalService>();
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen();
             services.AddHealthChecks();
